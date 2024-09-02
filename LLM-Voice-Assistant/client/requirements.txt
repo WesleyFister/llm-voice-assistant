@@ -1,0 +1,9 @@
+openwakeword
+pyaudio
+numpy<2.0
+silero-vad
+requests
+pydub
+torch==2.0.1
+torchaudio==2.0.2
+simpleaudio

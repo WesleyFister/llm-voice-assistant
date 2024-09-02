@@ -1,0 +1,8 @@
+requests
+playsound
+faster_whisper
+flask
+langchain
+langchain-community
+langchain-core
+piper-tts
