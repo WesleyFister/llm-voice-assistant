@@ -4,9 +4,17 @@ Carry a spoken conversation with LMM models! This project uses Whisper speech to
 This is very much a work in progress. Many basic features have yet to be implemented.
 
 ### Install
-This assumes you are running an Ubuntu/Debian system with the APT package manager.
+This program only works on Linux Ubuntu/Debian and Arch systems.
 
 Run 'setup.sh' script for both the client and server side. Next run 'start.sh' for the server first followed by the client next.
+
+### Features
+- Fully offline and local
+- Wake word detection: 'Hey Jarvis'
+- 100% hands free interation
+- Client server model
+- Streamed reponses
+- Multilingual speech-to-text and large-language-model
 
 ### Configuring
 In both the client and server configuring is done by opening 'start.sh' and passing in the corresponding flag to 'main.py' like so.
@@ -19,4 +27,4 @@ In both the client and server configuring is done by opening 'start.sh' and pass
 4. Clear LLM chat history by saying some variation of 'hey Jarvis clear chat history'.
 5. Allow multiple clients to connect to the server.
 6. Clean up code.
-7. Add Coqui TTS.
+7. Add multilingual TTS (OpenVoice).
