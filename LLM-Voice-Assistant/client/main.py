@@ -25,6 +25,11 @@ class llmVoiceAssistantClient():
         port = args.port
         self.vad_initial_delay = args.vad_initial_delay
         self.vad_delay = args.vad_delay
+        
+        if not os.path.exists("audio-input"):
+            os.makedirs("audio-input")
+        if not os.path.exists("audio-response"):
+            os.makedirs("audio-response")
 
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         print(f'Listening for {ip_address} on port {port}')
