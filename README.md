@@ -17,7 +17,6 @@ In both the client and server configuring is done by opening 'start.sh' and pass
 2. Properly close the server with CTRL + C.
 3. Make a proper setup.sh for both the client and server.
 4. Clear LLM chat history by saying some variation of 'hey Jarvis clear chat history'.
-5. Stream LLM output to TTS to speed up wait time.
-6. Allow multiple clients to connect to the server.
-7. Clean up code.
-8. Add Coqui TTS.
+5. Allow multiple clients to connect to the server.
+6. Clean up code.
+7. Add Coqui TTS.
