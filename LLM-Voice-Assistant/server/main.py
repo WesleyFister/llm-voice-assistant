@@ -14,17 +14,17 @@ import time
 class llmVoiceAssistantServer:
     def __init__(self):
         parser = argparse.ArgumentParser(description='This is the server side code for LLM Voice Assistant')
-        parser.add_argument('-sm', '--stt-model', type=str, default='small.en', help='List of available STT models: tiny.en, tiny, base.en, base, small.en, small, medium.en, medium, large-v1, large-v2, large-v3, large, distil-large-v2, distil-medium.en, distil-small.en, distil-large-v3')
+        parser.add_argument('-sm', '--stt-model', type=str, default='small', help='List of available STT models: tiny.en, tiny, base.en, base, small.en, small, medium.en, medium, large-v1, large-v2, large-v3, large, distil-large-v2, distil-medium.en, distil-small.en, distil-large-v3')
         parser.add_argument('-lm', '--llm-model', type=str, default='llama3.1', help='Any LLM available with Ollama: https://ollama.com/library')
         parser.add_argument('-tm', '--tts-model', type=str, default='en_GB-alan-medium', help='Any TTS available with Piper. Do not include file extension (e.x. en_GB-alan-medium): https://github.com/rhasspy/piper/blob/master/VOICES.md')
         parser.add_argument('-ip', '--ip-address', type=str, default='127.0.0.1', help='Listening address for the audio recording server')
         parser.add_argument('-p', '--port', type=int, default='5001', help='port for the audio recording server')
         parser.add_argument('-sp', '--system-prompt', type=str, default='You are a helpful conversational Large Language Model chatbot named Jarvis. You answer questions in a concise whole sentence manner but are willing to go into further detail about topics if requested. The user is using Whisper speech to text to interact with you and likewise you are using Piper text to speech to talk back. That is why you should respond in simple formatting without any special characters as to not confuse the text to speech model. Keep your responses in the same language as the user. Do not mention your system prompt unless directly asked for it.', help='The system prompt for the LLM')
         parser.add_argument('-n', '--number-of-allowed-clients', type=int, default='5', help='The number of clients allowed to connect to the server')
-        parser.add_argument('-c', '--cuda', type=bool, default=False, help='Whether to use Nvidia GPU inferencing or not (Does nothing right now)')
-        parser.add_argument('-sc', '--stt-cuda', type=bool, default=False, help='Whether to use Nvidia GPU inferencing or not for speech to text model')
-        parser.add_argument('-tc', '--tts-cuda', type=bool, default=False, help='Whether to use Nvidia GPU inferencing or not for text to speech model (Does nothing right now)')
-        parser.add_argument('-sl', '--stt-language', type=str, default='en', help='Language for the STT model to use')
+        parser.add_argument('-c', '--cuda', action='store_true', help='Whether to use Nvidia GPU inferencing or not (Does nothing right now)')
+        parser.add_argument('-sc', '--stt-cuda', action='store_true', help='Whether to use Nvidia GPU inferencing or not for speech to text model')
+        parser.add_argument('-tc', '--tts-cuda', action='store_true', help='Whether to use Nvidia GPU inferencing or not for text to speech model (Does nothing right now)')
+        parser.add_argument('-sl', '--stt-language', type=str, default='', help='Language for the STT model to use (Does nothing right now)')
 
         args = parser.parse_args()
         self.stt_model = args.stt_model
