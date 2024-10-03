@@ -1,14 +1,16 @@
+from wakeWord import wakeWord
+import os
+import argparse
+import threading
+import socket
+import wave
+import queue
 import numpy as np
+import pyaudio
+import simpleaudio as sa
 import torch
 torch.set_num_threads(1)
 import torchaudio
-import socket
-import pyaudio
-import wave
-import simpleaudio as sa
-from wakeWord import wakeWord
-import argparse
-import os
 
 class llmVoiceAssistantClient():
     def __init__(self):
@@ -19,23 +21,32 @@ class llmVoiceAssistantClient():
         parser.add_argument('-d', '--vad-delay', type=int, default='93', help='The delay before audio stops recording when a person stops speaking')
 
         args = parser.parse_args()
-        self.ip_address = args.ip_address
-        self.port = args.port
+        ip_address = args.ip_address
+        port = args.port
         self.vad_initial_delay = args.vad_initial_delay
         self.vad_delay = args.vad_delay
 
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        print('Server listening on port', self.port)
+        print(f'Listening for {ip_address} on port {port}')
 
-        self.client_socket.connect((self.ip_address, self.port))
+        self.client_socket.connect((ip_address, port))
         print('Connected to server')
 
     def clientStart(self):
+        play_obj = None
+
         while True:
             wakeWord()
+            self.running = False
+            if play_obj != None:
+                play_obj.stop()
+
             audioInput = self.recordAudio()
             self.sendAudioInput(audioInput)
-            self.playAudioResponse()
+            print("test")
+            self.running = True
+            getAudio_thread = threading.Thread(target=self.playAudioResponse)
+            getAudio_thread.start()
 
     def recordAudio(self):
         # Download and load the Silero VAD model.
@@ -65,7 +76,7 @@ class llmVoiceAssistantClient():
         audioFile = sa.WaveObject.from_wave_file("media/on.wav")
         play_obj = audioFile.play()
 
-        audioInput = 'input-' + os.urandom(8).hex() + '.wav' 
+        audioInput = 'audio-input/input-' + os.urandom(8).hex() + '.wav' 
         wf = wave.open(audioInput, 'wb')
         wf.setnchannels(CHANNELS)
         wf.setsampwidth(audio.get_sample_size(FORMAT))
@@ -78,7 +89,7 @@ class llmVoiceAssistantClient():
 
         # Send user audio data to the server.
         while silence < delay:
-            print(f'{silence}/{delay}')
+            print(f"\x1b[2K{silence}/{delay}", end="\r") # \x1b[2K ANSI sequence for clearing the current line.
             silence += 1
             audio_chunk = stream.read(num_samples)
             
@@ -95,14 +106,10 @@ class llmVoiceAssistantClient():
             
             # get the confidences and add them to the list to plot them later
             new_confidence = model(torch.from_numpy(audio_float32), 16000).item()
-            if new_confidence >= 0.5:
+            if new_confidence >= 0.3:
                 delay = self.vad_delay
                 silence = 0
                 voiceDetected = True
-
-        if voiceDetected == False:
-            print("Voice was not detected")
-            self.clientStart()
                 
         wf.close()
         print(f'{silence}/{delay}')
@@ -110,6 +117,12 @@ class llmVoiceAssistantClient():
         # Load and play an audio file.
         audioFile = sa.WaveObject.from_wave_file("media/off.wav")
         play_obj = audioFile.play()
+
+        if voiceDetected == False:
+            print("Voice was not detected")
+            self.client_socket.sendall("Voice was not detected".encode())
+            self.playAudioResponse()
+            self.clientStart()
 
         return audioInput
         
@@ -140,27 +153,66 @@ class llmVoiceAssistantClient():
                 os.remove(audioInput)
 
     def playAudioResponse(self):
-        params_str = self.client_socket.recv(1024).decode()
-        nchannels, sampwidth, framerate, nframes = map(int, params_str.split())
+        def getAudio(q):
+            while True:
+                file_size = self.client_socket.recv(1024)
+                if file_size.decode() == "end":
+                    print("End of output")
+                    q.put("end")
+                    break
 
-        total_size = self.client_socket.recv(1024).decode()
+                self.client_socket.sendall("ACK".encode()) # Not sure why but adding this stops erroneous wave data being sent with file_size causing a crash.
 
-        self.client_socket.sendall("ACK".encode())
+                audioResponse = 'audio-response/response-' + os.urandom(8).hex() + '.wav' 
 
-        p = pyaudio.PyAudio()
+                # Open a file to write the received data
+                with open(audioResponse, 'wb') as f:
+                    received_size = 0
+                    
+                    while received_size < int(file_size):
+                        # Receive a chunk of the file
+                        chunk = self.client_socket.recv(1024)
 
-        stream = p.open(format=p.get_format_from_width(sampwidth), channels=nchannels, rate=framerate, output=True)
+                        # Write the chunk to the file
+                        f.write(chunk)
 
-        chunk_size = 1024
-        received_size = 0
-        while received_size < int(total_size):
-            data = self.client_socket.recv(chunk_size)
-            stream.write(data)
-            received_size += len(data)
+                        # Increment the received size
+                        received_size += len(chunk)
 
-        stream.stop_stream()
-        stream.close()
-        p.terminate()
+                q.put(audioResponse)
+
+                self.client_socket.sendall("ACK".encode())
+
+        def playAudio(q):
+            while True:
+                audioResponse = q.get()
+                if audioResponse == 'end':
+                    break
+
+                if self.running == True:
+                    audioFile = sa.WaveObject.from_wave_file(audioResponse)
+                    play_obj = audioFile.play()
+                    play_obj.wait_done() # Makes program wait for audio to finish.
+
+                if os.path.exists(audioResponse):
+                    os.remove(audioResponse)
+
+        # Create a queue
+        q = queue.Queue()
+
+        # Create and start the producer thread
+        getAudio_thread = threading.Thread(target=getAudio, args=(q,))
+        getAudio_thread.start()
+
+        # Create and start the consumer thread
+        playAudio_thread = threading.Thread(target=playAudio, args=(q,))
+        playAudio_thread.start()
+
+        # Wait for the producer to finish
+        getAudio_thread.join()
+
+        # Wait for the consumer to finish
+        playAudio_thread.join()
 
 if __name__ == '__main__':
     client = llmVoiceAssistantClient()

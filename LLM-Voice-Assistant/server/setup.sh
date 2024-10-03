@@ -3,7 +3,17 @@ if [[ -z $(command -v ollama) ]]; then
     curl -fsSL https://ollama.com/install.sh | sh
 fi
 
-sudo apt install nvidia-cudnn -y
-python3 -m venv venv
+if [ -x "$(command -v apt-get)" ]; then
+    sudo apt-get install nvidia-cudnn -y
+    sudo apt-get install pyenv
+elif [ -x "$(command -v pacman)" ]; then
+    sudo pacman -Sy cudnn
+    sudo pacman -Sy pyenv
+fi
+
+pyenv install 3.11 --skip-existing
+pyenv global 3.11.10
+pyenv exec python3.11 -m venv venv
+
 source venv/bin/activate
 pip install -r requirements.txt
