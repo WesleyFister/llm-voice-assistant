@@ -1,0 +1,12 @@
+lingua-language-detector
+faster_whisper
+torchaudio==2.2.2
+torch==2.2.2
+nvidia-cublas-cu11
+nvidia-cudnn-cu12<9.0
+ollama
+piper-tts
+requests
+schedule
+nltk
+numpy<2

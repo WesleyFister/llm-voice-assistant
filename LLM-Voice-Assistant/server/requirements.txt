@@ -1,8 +1,0 @@
-faster_whisper
-nvidia-cublas-cu12
-nvidia-cudnn-cu12<9.0
-ollama
-piper-tts
-requests
-schedule
-nltk

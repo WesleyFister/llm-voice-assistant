@@ -11,9 +11,9 @@ elif [ -x "$(command -v pacman)" ]; then
     sudo pacman -Sy pyenv
 fi
 
-pyenv install 3.11 --skip-existing
-pyenv global 3.11.10
-pyenv exec python3.11 -m venv venv
+pyenv install 3.9 --skip-existing
+pyenv global 3.9.20
+pyenv exec python3.9 -m venv venv
 
 source venv/bin/activate
 pip install -r requirements.txt

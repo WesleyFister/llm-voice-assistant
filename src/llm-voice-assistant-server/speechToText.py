@@ -11,7 +11,7 @@ class speechToText:
         if self.cuda == True:
             # or run on GPU with INT8
             print('Running Whisper on GPU inferencing')
-            self.model = WhisperModel(self.stt_model, device="cuda", compute_type="int8_float16")
+            self.model = WhisperModel(self.stt_model, device="cuda", compute_type="int8")
 
         else:
             # or run on CPU with INT8
@@ -26,4 +26,4 @@ class speechToText:
         for segment in segments:
             transcript += segment.text
 
-        return transcript
+        return { "transcript": transcript, "language": info.language }

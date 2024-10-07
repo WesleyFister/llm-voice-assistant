@@ -21,13 +21,13 @@ def wakeWord():
     sentinel = False
     while True:
         audio = np.frombuffer(stream.read(CHUNK, False), dtype=np.int16)
-        prediction = model.predict(x=audio, threshold={'hey jarvis': 0.8}, debounce_time=5.0)
+        prediction = model.predict(x=audio, threshold={'hey jarvis': 0.9}, debounce_time=5.0)
 
         for mdl in model.prediction_buffer.keys():
             scores = list(model.prediction_buffer[mdl])
             curr_score = format(scores[-1], '.20f').replace("-", "")
             
-            if float(curr_score) >= 0.8:
+            if float(curr_score) >= 0.9:
                 print("Wake word detected!")
                 
                 sentinel = True
