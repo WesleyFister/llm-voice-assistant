@@ -7,6 +7,7 @@ if [ -x "$(command -v apt-get)" ]; then
     sudo apt-get install python3-pip -y
     sudo apt-get install portaudio19-dev -y
     sudo apt-get install libpython3-dev -y
+    sudo apt-get install pyenv -y
 elif [ -x "$(command -v pacman)" ]; then
     sudo pacman -Sy pyenv
 fi

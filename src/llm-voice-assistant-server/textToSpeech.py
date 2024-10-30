@@ -56,16 +56,17 @@ class textToSpeech():
                                             
                                         except:
                                             print("Unable to download model")
+                                    
+                                    if os.path.exists(model_dir + model_info["model"] + '.onnx') and os.path.exists(model_dir + model_info["model"] + '.onnx.json'):
+                                        print(f'Loading {model_info["model"]} TTS model')
+                                        self.models[language] = PiperVoice.load(model_dir + model_info["model"] + '.onnx')
 
-                                    print(f'Loading {model_info["model"]} TTS model')
-                                    self.models[language] = PiperVoice.load(model_dir + model_info["model"] + '.onnx')
-
-                                    # Enable auto start for the loaded model
-                                    if model_info["auto_start"] == False:
-                                        model_info["auto_start"] = True
-                                        json_object = json.dumps(self.json_models, indent=2)
-                                        with open("./piper-models/piper-models.json", "w") as file:
-                                            file.write(json_object)
+                                        # Enable auto start for the loaded model
+                                        if model_info["auto_start"] == False:
+                                            model_info["auto_start"] = True
+                                            json_object = json.dumps(self.json_models, indent=2)
+                                            with open("./piper-models/piper-models.json", "w") as file:
+                                                file.write(json_object)
 
     def textToSpeech(self, text, file_name, cuda):    
         self.download_model(text)
