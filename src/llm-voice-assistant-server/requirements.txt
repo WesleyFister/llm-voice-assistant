@@ -1,12 +1,13 @@
 lingua-language-detector
-faster_whisper
+faster_whisper==1.0.3
 torchaudio==2.2.2
 torch==2.2.2
-nvidia-cublas-cu11
-nvidia-cudnn-cu12<9.0
 ollama
 piper-tts
 requests
 schedule
 nltk
 numpy<2
+nvidia-cublas-cu11
+nvidia-cudnn-cu12<9.0
+ctranslate2==4.4.0

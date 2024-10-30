@@ -104,12 +104,12 @@ class llmVoiceAssistantClient():
 
             audio_int16 = np.frombuffer(audio_chunk, np.int16)
 
-            '''
+            
             # Check if amplitude is 0. This is necessary because if amplitude = 0 then it will crash the program. This needs to be fixed because it makes the VAD delay inconsistent.
             amplitude = np.max(np.abs(audio_int16))
             if amplitude == 0:
                 continue
-            '''
+            
 
             audio_float32 = int2float(audio_int16)
 

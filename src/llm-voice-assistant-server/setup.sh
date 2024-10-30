@@ -11,9 +11,19 @@ elif [ -x "$(command -v pacman)" ]; then
     sudo pacman -Sy pyenv
 fi
 
-pyenv install 3.9 --skip-existing
-pyenv global 3.9.20
-pyenv exec python3.9 -m venv venv
+pyenv install 3.11 --skip-existing
+pyenv global 3.11
+pyenv exec python3.11 -m venv venv
 
 source venv/bin/activate
+
+# MeloTTS
+pip install git+https://github.com/myshell-ai/MeloTTS.git
+python -m unidic download
+
 pip install -r requirements.txt
+
+# Faster-Whisper
+#pip install git+https://github.com/SYSTRAN/faster-whisper.git
+
+

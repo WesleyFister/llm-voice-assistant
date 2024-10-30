@@ -7,8 +7,11 @@ from lingua import Language, LanguageDetectorBuilder
 
 class ollamaChat:
     def __init__(self, llm_model):
-        languages = [Language.ARABIC, Language.CATALAN, Language.CZECH, Language.WELSH, Language.DANISH, Language.GERMAN, Language.GREEK, Language.ENGLISH, Language.SPANISH, Language.PERSIAN, Language.FINNISH, Language.FRENCH, Language.HUNGARIAN, Language.ICELANDIC, Language.ITALIAN, Language.GEORGIAN, Language.KAZAKH, Language.DUTCH, Language.POLISH, Language.PORTUGUESE, Language.ROMANIAN, Language.RUSSIAN, Language.SLOVAK, Language.SERBIAN, Language.SWEDISH, Language.SWAHILI, Language.TURKISH, Language.UKRAINIAN, Language.VIETNAMESE, Language.CHINESE]
-        self.detector = LanguageDetectorBuilder.from_languages(*languages).with_minimum_relative_distance(0.4).build()
+        # Supported languages by TTS
+        languagesPiperTTS = [Language.ARABIC, Language.CATALAN, Language.CZECH, Language.WELSH, Language.DANISH, Language.GERMAN, Language.GREEK, Language.ENGLISH, Language.SPANISH, Language.PERSIAN, Language.FINNISH, Language.FRENCH, Language.HUNGARIAN, Language.ICELANDIC, Language.ITALIAN, Language.GEORGIAN, Language.KAZAKH, Language.DUTCH, Language.POLISH, Language.PORTUGUESE, Language.ROMANIAN, Language.RUSSIAN, Language.SLOVAK, Language.SERBIAN, Language.SWEDISH, Language.SWAHILI, Language.TURKISH, Language.UKRAINIAN, Language.VIETNAMESE, Language.CHINESE]
+        languagesMeloTTS = [Language.ENGLISH, Language.SPANISH, Language.FRENCH, Language.CHINESE, Language.JAPANESE, Language.KOREAN]
+        languages = list(set(languagesPiperTTS + languagesMeloTTS))
+        self.detector = LanguageDetectorBuilder.from_languages(*languages).with_minimum_relative_distance(0.3).build()
         #self.detector = LanguageDetectorBuilder.from_all_languages().with_minimum_relative_distance(0).build() # All languages
         
         self.llm_model = llm_model
@@ -20,6 +23,9 @@ class ollamaChat:
         except ollama._types.ResponseError:
             print(f'Downloading {self.llm_model} LLM model')
             ollama.pull(self.llm_model)
+
+        print(f"Loading {self.llm_model}")
+        ollama.chat(model=self.llm_model)
         
         nltk.download('punkt_tab')
 
@@ -30,8 +36,6 @@ class ollamaChat:
             print(language, language.iso_code_639_1.name)
             language = language.iso_code_639_1.name
         
-        #language = "KR" if language == "KO" else language # KO is the abbrievation for the Korean language but it is KO-KR for South Korea and OpenVoice uses that
-        #language = "JP" if language == "JA" else language
         language = transcription["language"] if language == None else language
         return language.lower()
 
@@ -72,7 +76,8 @@ class ollamaChat:
             }
         )
 
-        stream = ollama.chat(model=self.llm_model, 
+        stream = ollama.chat(
+            model=self.llm_model, 
             messages=chatHistory,
             stream=True,
         )

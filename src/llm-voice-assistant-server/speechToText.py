@@ -1,14 +1,18 @@
 from faster_whisper import WhisperModel
 from faster_whisper.utils import download_model
+# TODO Limit Whisper STT automatic language selection to only include languages supported by TTS
 
 class speechToText:
     def __init__(self, stt_model, cuda):
-        self.stt_model = stt_model
-        self.cuda = cuda
+        if stt_model == "large-v3-turbo":
+            self.stt_model = "deepdml/faster-whisper-large-v3-turbo-ct2"
+
+        else:
+            self.stt_model = stt_model
         
         download_model(self.stt_model)
 
-        if self.cuda == True:
+        if cuda == True:
             # or run on GPU with INT8
             print('Running Whisper on GPU inferencing')
             self.model = WhisperModel(self.stt_model, device="cuda", compute_type="int8")
