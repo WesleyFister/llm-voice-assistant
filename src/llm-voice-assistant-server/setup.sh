@@ -22,8 +22,3 @@ pip install git+https://github.com/myshell-ai/MeloTTS.git
 python -m unidic download
 
 pip install -r requirements.txt
-
-# Faster-Whisper
-#pip install git+https://github.com/SYSTRAN/faster-whisper.git
-
-

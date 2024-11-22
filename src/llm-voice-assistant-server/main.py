@@ -15,7 +15,7 @@ import time
 class llmVoiceAssistantServer:
     def __init__(self):
         parser = argparse.ArgumentParser(description='This is the server side code for LLM Voice Assistant')
-        parser.add_argument('-sm', '--stt-model', type=str, default='small', help='List of available STT models: tiny.en, tiny, base.en, base, small.en, small, medium.en, medium, large-v1, large-v2, large-v3, large, distil-large-v2, distil-medium.en, distil-small.en, distil-large-v3, large-v3-turbo')
+        parser.add_argument('-sm', '--stt-model', type=str, default='small', help='List of available STT models: tiny.en, tiny, base.en, base, small.en, small, medium.en, medium, large-v1, large-v2, large-v3, large, distil-large-v2, distil-medium.en, distil-small.en, distil-large-v3, large-v3-turbo (reccommeded)')
         parser.add_argument('-lm', '--llm-model', type=str, default='hf.co/bartowski/Qwen2.5-7B-Instruct-GGUF:Q4_K_M', help='Any GGUF LLM on Hugging Face')
         parser.add_argument('-te', '--tts-engine', type=str, default='piper-tts', help='Select the TTS engine to use. (Does nothing right now)')
         parser.add_argument('-ip', '--ip-address', type=str, default='127.0.0.1', help='Listening address for the audio recording server')

@@ -4,11 +4,7 @@ from faster_whisper.utils import download_model
 
 class speechToText:
     def __init__(self, stt_model, cuda):
-        if stt_model == "large-v3-turbo":
-            self.stt_model = "deepdml/faster-whisper-large-v3-turbo-ct2"
-
-        else:
-            self.stt_model = stt_model
+        self.stt_model = stt_model
         
         download_model(self.stt_model)
 
