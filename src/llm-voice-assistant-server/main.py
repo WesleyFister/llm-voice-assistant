@@ -15,7 +15,7 @@ import time
 class llmVoiceAssistantServer:
     def __init__(self):
         parser = argparse.ArgumentParser(description='This is the server side code for LLM Voice Assistant')
-        parser.add_argument('-sm', '--stt-model', type=str, default='small', help='List of available STT models: tiny.en, tiny, base.en, base, small.en, small, medium.en, medium, large-v1, large-v2, large-v3, large, distil-large-v2, distil-medium.en, distil-small.en, distil-large-v3, large-v3-turbo (reccommeded)')
+        parser.add_argument('-sm', '--stt-model', type=str, default='small', help='List of available STT models: tiny.en, tiny, base.en, base, small.en, small, medium.en, medium, large-v1, large-v2, large-v3, large, distil-large-v2, distil-medium.en, distil-small.en, distil-large-v3, large-v3-turbo')
         parser.add_argument('-lm', '--llm-model', type=str, default='hf.co/bartowski/Qwen2.5-7B-Instruct-GGUF:Q4_K_M', help='Any GGUF LLM on Hugging Face')
         parser.add_argument('-te', '--tts-engine', type=str, default='piper-tts', help='Select the TTS engine to use. (Does nothing right now)')
         parser.add_argument('-ip', '--ip-address', type=str, default='127.0.0.1', help='Listening address for the audio recording server')
@@ -25,7 +25,7 @@ class llmVoiceAssistantServer:
         parser.add_argument('-c', '--cuda', action='store_true', help='Whether to use Nvidia GPU inferencing or not (Does nothing right now)')
         parser.add_argument('-sc', '--stt-cuda', action='store_true', help='Whether to use Nvidia GPU inferencing or not for speech to text model')
         parser.add_argument('-tc', '--tts-cuda', action='store_true', help='Whether to use Nvidia GPU inferencing or not for text to speech model (Does nothing right now)')
-        parser.add_argument('-sl', '--stt-language', type=str, default='', help='Language for the STT model to use (Does nothing right now)')
+        parser.add_argument('-l', '--language', nargs='+', type=str, default='all', help='Language for the STT and TTS model to use (Does nothing right now)')
 
         args = parser.parse_args()
         self.stt_model = args.stt_model
@@ -43,11 +43,11 @@ class llmVoiceAssistantServer:
         os.makedirs("audio-response", exist_ok=True)
         os.makedirs("chat-history", exist_ok=True)
 
+        print(f'Loading {self.stt_model} STT model')
+        self.speechToText = speechToText(self.stt_model, self.stt_cuda)
         print('Downloading and loading models into memory')
         print('First run can take a very long time, especially with large models')
         self.ollamaChat = ollamaChat(self.llm_model) # Unfortunately, this doesn't provide a progress bar so the user has no idea how long it will take.
-        print(f'Loading {self.stt_model} STT model')
-        self.speechToText = speechToText(self.stt_model, self.stt_cuda)
         self.textToSpeech = textToSpeech()
 
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -63,7 +63,7 @@ class llmVoiceAssistantServer:
             
             audioInput = 'audio-input/input-' + os.urandom(8).hex() + '.wav' 
             self.receiveAudioInput(audioInput)
-            
+
             startTime = time.perf_counter()
 
             transcription = self.speechToText.transcribe(audioInput)
@@ -73,7 +73,6 @@ class llmVoiceAssistantServer:
 
             endTime = time.perf_counter()
             elapsedTime = endTime - startTime
-
             print(f"Took {elapsedTime} seconds to transcribe User\'s speech")
             self.running = True
 

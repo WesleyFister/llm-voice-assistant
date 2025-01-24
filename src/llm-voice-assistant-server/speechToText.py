@@ -1,6 +1,7 @@
 from faster_whisper import WhisperModel
 from faster_whisper.utils import download_model
-# TODO Limit Whisper STT automatic language selection to only include languages supported by TTS
+from scipy.io import wavfile
+import time
 
 class speechToText:
     def __init__(self, stt_model, cuda):
@@ -18,11 +19,36 @@ class speechToText:
             print('Running Whisper on CPU inferencing')
             self.model = WhisperModel(self.stt_model, device="cpu", compute_type="int8")
 
+        self.transcribe("workAround.wav") # Despite loading the model beforehand the first transcription always takes longer. So we transcribe a dummy audio file first.
+
+    def detect_language(self, audioInput, allowed_languages):
+        sampling_rate, audio_data = wavfile.read(audioInput)
+
+        language, language_probability, all_language_probs = self.model.detect_language(audio_data)
+
+        score = 0
+        for language_code, language_prob in all_language_probs:
+            for allowed_language in allowed_languages:
+                if language_code == allowed_language:
+                    if language_prob > score:
+                        score = language_prob
+                        detected_language = language_code
+
+        return detected_language
+
     def transcribe(self, audioInput):
         transcript = ""
 
-        segments, info = self.model.transcribe(audioInput, beam_size=5) # language="en"
-        print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
+        if self.model.model.is_multilingual:
+            languagesPiperTTS = ['ar', 'ca', 'cs', 'cy', 'da', 'de', 'el', 'en', 'es', 'fa', 'fi', 'fr', 'hu', 'is', 'it', 'ka', 'kk', 'nl', 'pl', 'pt', 'ro', 'ru', 'sk', 'sr', 'sv', 'sw', 'tr', 'uk', 'vi', 'zh']
+            languagesMeloTTS = ['en', 'es', 'fr', 'zh', 'ja', 'ko']
+            allowed_languages = list(set(languagesPiperTTS + languagesMeloTTS))
+            detected_language = self.detect_language(audioInput, allowed_languages)
+
+        else:
+            detected_language = 'en'
+
+        segments, info = self.model.transcribe(audioInput, beam_size=5, language=detected_language)
         for segment in segments:
             transcript += segment.text
 

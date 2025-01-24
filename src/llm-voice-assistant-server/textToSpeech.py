@@ -1,7 +1,7 @@
 from piper.voice import PiperVoice
 from piper.download import get_voices
 from piper.download import ensure_voice_exists
-from melo.api import TTS
+from melo.api import TTS # MeloTTS for some reason adds massive delay to Faster Whisper when transcribing.
 import wave
 import os
 import json
@@ -13,17 +13,17 @@ class textToSpeech():
         self.file = open(model_dir + 'piper-models.json')
         self.json_models = json.load(self.file)
         
-        self.models = {}
+        self.piperModels = {}
         self.download_model()
 
     def download_model(self, text={"language": None}, model_dir='./piper-models/'):
         # Download Piper TTS model if none are found.
-        if self.models == {}:
+        if self.piperModels == {}:
             download = True
         
         # Check if the language is already in memory
         else:
-            for language in self.models:
+            for language in self.piperModels:
                 download = True
                 
                 if language == text["language"]:
@@ -59,7 +59,7 @@ class textToSpeech():
                                     
                                     if os.path.exists(model_dir + model_info["model"] + '.onnx') and os.path.exists(model_dir + model_info["model"] + '.onnx.json'):
                                         print(f'Loading {model_info["model"]} TTS model')
-                                        self.models[language] = PiperVoice.load(model_dir + model_info["model"] + '.onnx')
+                                        self.piperModels[language] = PiperVoice.load(model_dir + model_info["model"] + '.onnx')
 
                                         # Enable auto start for the loaded model
                                         if model_info["auto_start"] == False:
@@ -85,16 +85,15 @@ class textToSpeech():
                     for model_quality, model_info in model_quality.items():
                         if model_info["enabled"] == True:
                             wav_file = wave.open(file_name, 'w')
-                            audio = self.models[text["language"]].synthesize(text["sentence"], wav_file)
-            
+                            audio = self.piperModels[text["language"]].synthesize(text["sentence"], wav_file)
+
         else:
             text["language"] = "KR" if text["language"].upper() == "KO" else text["language"].upper() # KO is the abbrievation for the Korean language but it is KO-KR for South Korea and OpenVoice uses that
             text["language"] = "JP" if text["language"].upper() == "JA" else text["language"].upper()
             
-            speed = 1.0
             device = 'auto'
 
-            model = TTS(language=text["language"], device=device) # TODO Preload model so it doesn't unload and reload every single time.
-            speaker_ids = model.hps.data.spk2id
+            meloModel = TTS(language=text["language"], device=device)
+            speaker_ids = meloModel.hps.data.spk2id
 
-            model.tts_to_file(text["sentence"], speaker_ids[text["language"].upper()], file_name, speed=speed)
+            meloModel.tts_to_file(text["sentence"], speaker_ids[text["language"].upper()], file_name, quiet=True)

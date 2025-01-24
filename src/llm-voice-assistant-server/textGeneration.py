@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 import json
 import ollama
 import nltk
@@ -13,6 +14,8 @@ class ollamaChat:
         languages = list(set(languagesPiperTTS + languagesMeloTTS))
         self.detector = LanguageDetectorBuilder.from_languages(*languages).with_minimum_relative_distance(0.3).build()
         #self.detector = LanguageDetectorBuilder.from_all_languages().with_minimum_relative_distance(0).build() # All languages
+
+        self.detector.detect_language_of("The quick brown fox jumps over the lazy dog") # Loads the Lingua language detection models.
         
         self.llm_model = llm_model
 
@@ -26,8 +29,14 @@ class ollamaChat:
 
         print(f"Loading {self.llm_model}")
         ollama.chat(model=self.llm_model)
-        
+
         nltk.download('punkt_tab')
+
+        # Without this the first response from the LLM is very slow. Getting a response first speeds it up but only by running this complete function first fully reduces the delay. I am not sure as why.
+        messages = self.chatWithHistory({"language": "en", "transcript": "Repeat after me 'The quick brown fox jumps over the lazy dog.'"}, "chat-history/workAround.json", "Follow the user's instructions.")
+        for message in messages:
+            message = 0
+        os.remove("chat-history/workAround.json")
 
     def langDetect(self, text, transcription):
         language = self.detector.detect_language_of(text)
@@ -77,9 +86,9 @@ class ollamaChat:
         )
 
         stream = ollama.chat(
-            model=self.llm_model, 
-            messages=chatHistory,
-            stream=True,
+            model = self.llm_model, 
+            messages = chatHistory,
+            stream = True,
         )
 
         sentence = 1
