@@ -1,7 +1,6 @@
 from piper.voice import PiperVoice
 from piper.download import get_voices
 from piper.download import ensure_voice_exists
-from melo.api import TTS # MeloTTS for some reason adds massive delay to Faster Whisper when transcribing.
 import wave
 import os
 import json
@@ -86,14 +85,3 @@ class textToSpeech():
                         if model_info["enabled"] == True:
                             wav_file = wave.open(file_name, 'w')
                             audio = self.piperModels[text["language"]].synthesize(text["sentence"], wav_file)
-
-        else:
-            text["language"] = "KR" if text["language"].upper() == "KO" else text["language"].upper() # KO is the abbrievation for the Korean language but it is KO-KR for South Korea and OpenVoice uses that
-            text["language"] = "JP" if text["language"].upper() == "JA" else text["language"].upper()
-            
-            device = 'auto'
-
-            meloModel = TTS(language=text["language"], device=device)
-            speaker_ids = meloModel.hps.data.spk2id
-
-            meloModel.tts_to_file(text["sentence"], speaker_ids[text["language"].upper()], file_name, quiet=True)
