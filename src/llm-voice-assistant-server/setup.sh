@@ -17,8 +17,4 @@ pyenv exec python3.11 -m venv venv
 
 source venv/bin/activate
 
-# MeloTTS
-pip install git+https://github.com/myshell-ai/MeloTTS.git
-python -m unidic download
-
 pip install -r requirements.txt
