@@ -57,7 +57,7 @@ class llmVoiceAssistantClient():
                 play_obj.stop()
 
             audioInput = self.recordAudio()
-            self.sendAudioInput(audioInput)
+            #self.sendAudioInput(audioInput)
             self.running = True
             
             if self.no_wakeword == False:
@@ -107,7 +107,6 @@ class llmVoiceAssistantClient():
         delay = self.vad_initial_delay
         delay2 = self.recording_length
         new_confidence = 1
-        voiceDetected = False
         buffer_written = False
         buffer_size = 93
         audio_buffer = deque(maxlen=buffer_size)
@@ -149,6 +148,10 @@ class llmVoiceAssistantClient():
                 delay2 = self.vad_delay
                 silence = 0
                 voiceDetected = True
+
+            # If silence is half of the delay send audio to be Preemptively transcribed.
+            if silence == int(delay / 2) and voiceDetected == True:
+                self.sendAudioInput(audioInput)
         
         stream.stop_stream()
         stream.close
@@ -166,6 +169,12 @@ class llmVoiceAssistantClient():
             self.client_socket.sendall("Voice was not detected".encode())
             self.playAudioResponse()
             self.clientStart()
+
+        if voiceDetected == True:
+            self.client_socket.sendall("endOfSpeech".encode())
+            if os.path.exists(audioInput):
+                os.remove(audioInput)
+            return
 
         return audioInput
         
@@ -191,9 +200,6 @@ class llmVoiceAssistantClient():
                     break
 
                 self.client_socket.sendall(chunk)
-
-            if os.path.exists(audioInput):
-                os.remove(audioInput)
 
     def playAudioResponse(self):
         def getAudio(q):

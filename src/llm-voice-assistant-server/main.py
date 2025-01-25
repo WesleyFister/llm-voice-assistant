@@ -9,8 +9,6 @@ import socket
 import wave
 import schedule
 import time
-# Add Openvoice TTS
-# This can take multilingual text https://github.com/fishaudio/fish-speech?tab=readme-ov-file
 
 class llmVoiceAssistantServer:
     def __init__(self):
@@ -59,21 +57,25 @@ class llmVoiceAssistantServer:
         chatHistoryFile = 'chat-history/chat-history-' + os.urandom(8).hex() + '.json' 
 
         while True:
+            speech = True
             self.running = bool(int(self.client_socket.recv(1024)))
             
             audioInput = 'audio-input/input-' + os.urandom(8).hex() + '.wav' 
-            self.receiveAudioInput(audioInput)
+            while speech == True:
+                speech = self.receiveAudioInput(audioInput)
 
-            startTime = time.perf_counter()
+                if speech == True:
+                    startTime = time.perf_counter()
 
-            transcription = self.speechToText.transcribe(audioInput)
-            print(f"\033[32mUser: {transcription['transcript']}\033[0m")
-            if os.path.exists(audioInput):
-                os.remove(audioInput)
+                    transcription = self.speechToText.transcribe(audioInput)
+                    print(f"\033[32mUser: {transcription['transcript']}\033[0m")
+                    if os.path.exists(audioInput):
+                        os.remove(audioInput)
 
-            endTime = time.perf_counter()
-            elapsedTime = endTime - startTime
-            print(f"Took {elapsedTime} seconds to transcribe User\'s speech")
+                    endTime = time.perf_counter()
+                    elapsedTime = endTime - startTime
+                    print(f"Took {elapsedTime} seconds to transcribe User\'s speech")
+
             self.running = True
 
             self.sendResponseToClient(transcription, chatHistoryFile)
@@ -183,18 +185,24 @@ class llmVoiceAssistantServer:
             self.sendResponseToClient(audioResponse)
             self.handleClient()
 
-        self.client_socket.sendall('ACK'.encode())
+        if file_size == "endOfSpeech":
+            return False
 
-        # Open a file to write the received data
-        with open(audioInput, 'wb') as f:
-            received_size = 0
-            
-            while received_size < int(file_size):
-                chunk = self.client_socket.recv(1024)
+        else:
+            self.client_socket.sendall('ACK'.encode())
 
-                f.write(chunk)
+            # Open a file to write the received data
+            with open(audioInput, 'wb') as f:
+                received_size = 0
+                
+                while received_size < int(file_size):
+                    chunk = self.client_socket.recv(1024)
 
-                received_size += len(chunk)
+                    f.write(chunk)
+
+                    received_size += len(chunk)
+
+        return True
 
     def start(self):
         while True:
