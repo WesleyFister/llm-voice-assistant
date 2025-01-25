@@ -10,10 +10,9 @@ class ollamaChat:
     def __init__(self, llm_model):
         # Supported languages by TTS
         languagesPiperTTS = [Language.ARABIC, Language.CATALAN, Language.CZECH, Language.WELSH, Language.DANISH, Language.GERMAN, Language.GREEK, Language.ENGLISH, Language.SPANISH, Language.PERSIAN, Language.FINNISH, Language.FRENCH, Language.HUNGARIAN, Language.ICELANDIC, Language.ITALIAN, Language.GEORGIAN, Language.KAZAKH, Language.DUTCH, Language.POLISH, Language.PORTUGUESE, Language.ROMANIAN, Language.RUSSIAN, Language.SLOVAK, Language.SERBIAN, Language.SWEDISH, Language.SWAHILI, Language.TURKISH, Language.UKRAINIAN, Language.VIETNAMESE, Language.CHINESE]
-        languagesMeloTTS = [Language.ENGLISH, Language.SPANISH, Language.FRENCH, Language.CHINESE, Language.JAPANESE, Language.KOREAN]
-        languages = list(set(languagesPiperTTS + languagesMeloTTS))
+        languages = languagesPiperTTS
+        #languages = list(set(languagesPiperTTS + otherTTSEngines))
         self.detector = LanguageDetectorBuilder.from_languages(*languages).with_minimum_relative_distance(0.3).build()
-        #self.detector = LanguageDetectorBuilder.from_all_languages().with_minimum_relative_distance(0).build() # All languages
 
         self.detector.detect_language_of("The quick brown fox jumps over the lazy dog") # Loads the Lingua language detection models.
         

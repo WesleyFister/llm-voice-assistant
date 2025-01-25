@@ -41,8 +41,8 @@ class speechToText:
 
         if self.model.model.is_multilingual:
             languagesPiperTTS = ['ar', 'ca', 'cs', 'cy', 'da', 'de', 'el', 'en', 'es', 'fa', 'fi', 'fr', 'hu', 'is', 'it', 'ka', 'kk', 'nl', 'pl', 'pt', 'ro', 'ru', 'sk', 'sr', 'sv', 'sw', 'tr', 'uk', 'vi', 'zh']
-            languagesMeloTTS = ['en', 'es', 'fr', 'zh', 'ja', 'ko']
-            allowed_languages = list(set(languagesPiperTTS + languagesMeloTTS))
+            allowed_languages = languagesPiperTTS
+            #allowed_languages = list(set(languagesPiperTTS + otherTTSEngines))
             detected_language = self.detect_language(audioInput, allowed_languages)
 
         else:
