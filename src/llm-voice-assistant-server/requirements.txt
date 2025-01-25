@@ -1,4 +1,4 @@
-faster_whisper==1.1.0
+faster_whisper==1.1.1
 nvidia-cublas-cu12==12.4.5.8
 nvidia-cudnn-cu12==9.1.0.70
 ctranslate2==4.5.0
@@ -8,6 +8,7 @@ numpy<2.0.0
 nltk==3.9.1
 lingua-language-detector==2.0.2
 piper-tts==1.2.0
-ollama==0.4.0
+ollama==0.4.7
 requests==2.32.3
 schedule==1.2.2
+scipy==1.15.1
