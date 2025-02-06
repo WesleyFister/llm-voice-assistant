@@ -1,5 +1,5 @@
 from speechToText import speechToText
-from textGeneration import textToText
+from textToText import textToText
 from textToSpeech import textToSpeech
 import os
 import argparse
