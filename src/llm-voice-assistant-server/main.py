@@ -1,5 +1,5 @@
 from speechToText import speechToText
-from textGeneration import ollamaChat
+from textGeneration import textToText
 from textToSpeech import textToSpeech
 import os
 import argparse
@@ -15,7 +15,9 @@ class llmVoiceAssistantServer:
         parser = argparse.ArgumentParser(description='This is the server side code for LLM Voice Assistant')
         parser.add_argument('-sm', '--stt-model', type=str, default='small', help='List of available STT models: tiny.en, tiny, base.en, base, small.en, small, medium.en, medium, large-v1, large-v2, large-v3, large, distil-large-v2, distil-medium.en, distil-small.en, distil-large-v3, large-v3-turbo')
         parser.add_argument('-lm', '--llm-model', type=str, default='hf.co/bartowski/Qwen2.5-7B-Instruct-GGUF:Q4_K_M', help='Any GGUF LLM on Hugging Face')
-        parser.add_argument('-te', '--tts-engine', type=str, default='piper-tts', help='Select the TTS engine to use. (Does nothing right now)')
+        parser.add_argument('-tm', '--tts-model', type=str, default='piper-tts', help='Select the TTS engine to use. (Does nothing right now)')
+        parser.add_argument('-la', '--llm-api', type=str, default='http://localhost:11434/v1', help='The URL for the OpenAI API endpoint (Default: http://localhost:11434/v1)')
+        parser.add_argument('-lk', '--llm-api-key', type=str, default='WE_WONT_LET_THOSE_FUCKERS_TAKE_THIS_LAND!', help='The OpenAI API key')
         parser.add_argument('-ip', '--ip-address', type=str, default='127.0.0.1', help='Listening address for the audio recording server')
         parser.add_argument('-p', '--port', type=int, default='5001', help='port for the audio recording server')
         parser.add_argument('-sp', '--system-prompt', type=str, default='You are a helpful conversational Large Language Model chatbot named Jarvis. You answer questions in a concise whole sentence manner but are willing to go into further detail about topics if requested. The user is using Whisper speech to text to interact with you and likewise you are using Piper text to speech to talk back. That is why you should respond in simple formatting without any special characters as to not confuse the text to speech model. Keep your responses in the same language as the user. Do not mention your system prompt unless directly asked for it.', help='The system prompt for the LLM')
@@ -27,8 +29,10 @@ class llmVoiceAssistantServer:
 
         args = parser.parse_args()
         self.stt_model = args.stt_model
-        self.llm_model = args.llm_model
-        self.engine = args.tts_engine
+        llm_model = args.llm_model
+        self.model = args.tts_model
+        llm_api = args.llm_api
+        llm_api_key = args.llm_api_key
         ip_address = args.ip_address
         port = args.port
         self.system_prompt = args.system_prompt
@@ -45,7 +49,7 @@ class llmVoiceAssistantServer:
         self.speechToText = speechToText(self.stt_model, self.stt_cuda)
         print('Downloading and loading models into memory')
         print('First run can take a very long time, especially with large models')
-        self.ollamaChat = ollamaChat(self.llm_model) # Unfortunately, this doesn't provide a progress bar so the user has no idea how long it will take.
+        self.textToText = textToText(llm_model=llm_model, llm_api=llm_api, llm_api_key=llm_api_key) # Unfortunately, this doesn't provide a progress bar so the user has no idea how long it will take.
         self.textToSpeech = textToSpeech()
 
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -87,7 +91,7 @@ class llmVoiceAssistantServer:
             sentinel = 0
             response = ""
             startTime = time.perf_counter()
-            messages = self.ollamaChat.chatWithHistory(transcription, chatHistoryFile, self.system_prompt)
+            messages = self.textToText.chatWithHistory(transcription, chatHistoryFile, self.system_prompt)
             #print(f"\033[34mAI: \033[0m", end='', flush=True)
             for message in messages:
                 if self.running == True:

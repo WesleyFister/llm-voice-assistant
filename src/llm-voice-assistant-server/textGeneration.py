@@ -1,13 +1,13 @@
+from openai import OpenAI
+from lingua import Language, LanguageDetectorBuilder
+from nltk.tokenize import sent_tokenize
+import nltk
 from datetime import datetime
 import os
 import json
-import ollama
-import nltk
-from nltk.tokenize import sent_tokenize
-from lingua import Language, LanguageDetectorBuilder
 
-class ollamaChat:
-    def __init__(self, llm_model):
+class textToText:
+    def __init__(self, llm_model, llm_api, llm_api_key):
         # Supported languages by TTS
         languagesPiperTTS = [Language.ARABIC, Language.CATALAN, Language.CZECH, Language.WELSH, Language.DANISH, Language.GERMAN, Language.GREEK, Language.ENGLISH, Language.SPANISH, Language.PERSIAN, Language.FINNISH, Language.FRENCH, Language.HUNGARIAN, Language.ICELANDIC, Language.ITALIAN, Language.GEORGIAN, Language.KAZAKH, Language.DUTCH, Language.POLISH, Language.PORTUGUESE, Language.ROMANIAN, Language.RUSSIAN, Language.SLOVAK, Language.SERBIAN, Language.SWEDISH, Language.SWAHILI, Language.TURKISH, Language.UKRAINIAN, Language.VIETNAMESE, Language.CHINESE]
         languages = languagesPiperTTS
@@ -18,21 +18,15 @@ class ollamaChat:
         
         self.llm_model = llm_model
 
-        # Check if the model is available, and download it if not
-        try:
-            ollama.show(self.llm_model)
-            
-        except ollama._types.ResponseError:
-            print(f'Downloading {self.llm_model} LLM model')
-            ollama.pull(self.llm_model)
-
-        print(f"Loading {self.llm_model}")
-        ollama.chat(model=self.llm_model)
+        self.client = OpenAI(
+            base_url = 'http://localhost:11434/v1', # Add ability to change this.
+            api_key='WE_WONT_LET_THOSE_FUCKERS_TAKE_THIS_LAND!', # required # Add ability to change this.
+        )
 
         nltk.download('punkt_tab')
 
         # Without this the first response from the LLM is very slow. Getting a response first speeds it up but only by running this complete function first fully reduces the delay. I am not sure as why.
-        messages = self.chatWithHistory({"language": "en", "transcript": "Repeat after me 'The quick brown fox jumps over the lazy dog.'"}, "chat-history/workAround.json", "Follow the user's instructions.")
+        messages = self.chatWithHistory({"language": "en", "transcript": "Copy me verbatim 'The quick brown fox jumps over the lazy dog.'"}, "chat-history/workAround.json", "Follow the user's instructions.")
         for message in messages:
             message = 0
         os.remove("chat-history/workAround.json")
@@ -84,7 +78,7 @@ class ollamaChat:
             }
         )
 
-        stream = ollama.chat(
+        stream = self.client.chat.completions.create(
             model = self.llm_model, 
             messages = chatHistory,
             stream = True,
@@ -93,7 +87,7 @@ class ollamaChat:
         sentence = 1
         response = ""
         for chunk in stream:
-            part = chunk['message']['content']
+            part = chunk.choices[0].delta.content
             response = response + part
             
             # Chunk the response into sentences and yield each one as it is completed
