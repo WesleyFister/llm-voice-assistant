@@ -67,8 +67,17 @@ class textToSpeech():
                                             with open("./piper-models/piper-models.json", "w") as file:
                                                 file.write(json_object)
 
+    def cleanText(self, text):
+        bannedCharacters = "*$"
+        for character in bannedCharacters:
+            text["sentence"] = text["sentence"].replace(character, "")
+
+        return text
+
     def textToSpeech(self, text, file_name, cuda):    
         self.download_model(text)
+
+        text = self.cleanText(text)
         
         for language in self.json_models["language"]:
             if language == text["language"]:
