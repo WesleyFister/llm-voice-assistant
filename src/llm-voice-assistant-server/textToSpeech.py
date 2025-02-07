@@ -6,16 +6,22 @@ import os
 import json
 
 class textToSpeech():
-    def __init__(self):        
+    def __init__(self, cuda):        
         model_dir = './piper-models/'
         
         self.file = open(model_dir + 'piper-models.json')
         self.json_models = json.load(self.file)
         
-        self.piperModels = {}
-        self.download_model()
+        if cuda == True:
+            print("Running Piper TTS on GPU inferencing")
 
-    def download_model(self, text={"language": None}, model_dir='./piper-models/'):
+        else:
+            print("Running Piper TTS on CPU inferencing")
+
+        self.piperModels = {}
+        self.download_model(cuda=cuda)
+
+    def download_model(self, text={"language": None}, model_dir='./piper-models/', cuda=False):
         # Download Piper TTS model if none are found.
         if self.piperModels == {}:
             download = True
@@ -58,7 +64,7 @@ class textToSpeech():
                                     
                                     if os.path.exists(model_dir + model_info["model"] + '.onnx') and os.path.exists(model_dir + model_info["model"] + '.onnx.json'):
                                         print(f'Loading {model_info["model"]} TTS model')
-                                        self.piperModels[language] = PiperVoice.load(model_dir + model_info["model"] + '.onnx')
+                                        self.piperModels[language] = PiperVoice.load(model_dir + model_info["model"] + '.onnx', use_cuda=cuda)
 
                                         # Enable auto start for the loaded model
                                         if model_info["auto_start"] == False:
@@ -66,6 +72,12 @@ class textToSpeech():
                                             json_object = json.dumps(self.json_models, indent=2)
                                             with open("./piper-models/piper-models.json", "w") as file:
                                                 file.write(json_object)
+                                        
+                                        # Piper-TTS with CUDA is faster but only after the first run.
+                                        if cuda == True:
+                                            wav_file = wave.open("piper-tts-workaround", 'w')
+                                            self.piperModels[language].synthesize("Workaround.", wav_file)
+                                            os.remove("piper-tts-workaround")
 
     def cleanText(self, text):
         bannedCharacters = "*$"
@@ -75,7 +87,7 @@ class textToSpeech():
         return text
 
     def textToSpeech(self, text, file_name, cuda):    
-        self.download_model(text)
+        self.download_model(text=text, cuda=cuda)
 
         text = self.cleanText(text)
         

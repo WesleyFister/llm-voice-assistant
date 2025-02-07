@@ -24,7 +24,7 @@ class llmVoiceAssistantServer:
         parser.add_argument('-n', '--number-of-allowed-clients', type=int, default='5', help='The number of clients allowed to connect to the server')
         parser.add_argument('-c', '--cuda', action='store_true', help='Whether to use Nvidia GPU inferencing or not (Does nothing right now)')
         parser.add_argument('-sc', '--stt-cuda', action='store_true', help='Whether to use Nvidia GPU inferencing or not for speech to text model')
-        parser.add_argument('-tc', '--tts-cuda', action='store_true', help='Whether to use Nvidia GPU inferencing or not for text to speech model (Does nothing right now)')
+        parser.add_argument('-tc', '--tts-cuda', action='store_true', help='Whether to use Nvidia GPU inferencing or not for text to speech model (makes long responses faster but short responses slower to synthesize)')
         parser.add_argument('-l', '--language', nargs='+', type=str, default='all', help='Language for the STT and TTS model to use (Does nothing right now)')
 
         args = parser.parse_args()
@@ -50,7 +50,7 @@ class llmVoiceAssistantServer:
         print('Downloading and loading models into memory')
         print('First run can take a very long time, especially with large models')
         self.textToText = textToText(llm_model=llm_model, llm_api=llm_api, llm_api_key=llm_api_key) # Unfortunately, this doesn't provide a progress bar so the user has no idea how long it will take.
-        self.textToSpeech = textToSpeech()
+        self.textToSpeech = textToSpeech(cuda=self.tts_cuda)
 
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind((ip_address, port))

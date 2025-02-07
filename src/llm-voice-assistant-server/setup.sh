@@ -18,3 +18,7 @@ pyenv exec python3.11 -m venv venv
 source venv/bin/activate
 
 pip install -r requirements.txt
+
+# You have to uninstall onnxruntime first before installing onnxruntime-gpu.
+pip uninstall onnxruntime -y
+pip install "onnxruntime-gpu==1.20.1"
