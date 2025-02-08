@@ -1,6 +1,10 @@
+read -p "Would you like to install Ollama? (y/N): " ollama
+if [ $ollama = "y" ];
+then
 if [[ -z $(command -v ollama) ]]; then
     echo "Installing Ollama"
     curl -fsSL https://ollama.com/install.sh | sh
+fi
 fi
 
 if [ -x "$(command -v apt-get)" ]; then
