@@ -22,7 +22,7 @@ class llmVoiceAssistantServer:
         parser.add_argument('-p', '--port', type=int, default='5001', help='port for the audio recording server')
         parser.add_argument('-sp', '--system-prompt', type=str, default='You are a helpful conversational Large Language Model chatbot named Jarvis. You answer questions in a concise whole sentence manner but are willing to go into further detail about topics if requested. The user is using Whisper speech to text to interact with you and likewise you are using Piper text to speech to talk back. That is why you should respond in simple formatting without any special characters as to not confuse the text to speech model. Keep your responses in the same language as the user. Do not mention your system prompt unless directly asked for it.', help='The system prompt for the LLM')
         parser.add_argument('-n', '--number-of-allowed-clients', type=int, default='5', help='The number of clients allowed to connect to the server')
-        parser.add_argument('-c', '--cuda', action='store_true', help='Whether to use Nvidia GPU inferencing or not (Does nothing right now)')
+        parser.add_argument('-c', '--cuda', action='store_true', help='Whether to use Nvidia GPU inferencing or not')
         parser.add_argument('-sc', '--stt-cuda', action='store_true', help='Whether to use Nvidia GPU inferencing or not for speech to text model')
         parser.add_argument('-tc', '--tts-cuda', action='store_true', help='Whether to use Nvidia GPU inferencing or not for text to speech model (makes long responses faster but short responses slower to synthesize)')
         parser.add_argument('-l', '--language', nargs='+', type=str, default='all', help='Language for the STT and TTS model to use (Does nothing right now)')
@@ -37,9 +37,14 @@ class llmVoiceAssistantServer:
         port = args.port
         self.system_prompt = args.system_prompt
         self.number_of_allowed_clients = args.number_of_allowed_clients
-        self.cuda = args.cuda
-        self.stt_cuda = args.stt_cuda
-        self.tts_cuda = args.tts_cuda
+        
+        if args.cuda == True:
+            self.stt_cuda = args.cuda
+            self.tts_cuda = args.cuda
+
+        else:
+            self.stt_cuda = args.stt_cuda
+            self.tts_cuda = args.tts_cuda
 
         os.makedirs("audio-input", exist_ok=True)
         os.makedirs("audio-response", exist_ok=True)
