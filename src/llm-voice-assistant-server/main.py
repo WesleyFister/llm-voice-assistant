@@ -54,7 +54,7 @@ class llmVoiceAssistantServer:
         self.speechToText = speechToText(self.stt_model, self.stt_cuda)
         print('Downloading and loading models into memory')
         print('First run can take a very long time, especially with large models')
-        self.textToText = textToText(llm_model=llm_model, llm_api=llm_api, llm_api_key=llm_api_key) # Unfortunately, this doesn't provide a progress bar so the user has no idea how long it will take.
+        self.textToText = textToText(llm_model=llm_model, llm_api=llm_api, llm_api_key=llm_api_key)
         self.textToSpeech = textToSpeech(cuda=self.tts_cuda)
 
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
