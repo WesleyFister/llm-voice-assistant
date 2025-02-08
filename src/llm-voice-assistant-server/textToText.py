@@ -19,8 +19,8 @@ class textToText:
         self.llm_model = llm_model
 
         self.client = OpenAI(
-            base_url = 'http://localhost:11434/v1', # Add ability to change this.
-            api_key='WE_WONT_LET_THOSE_FUCKERS_TAKE_THIS_LAND!', # required # Add ability to change this.
+            base_url = llm_api,
+            api_key = llm_api_key, # Required even if unused.
         )
 
         nltk.download('punkt_tab')
