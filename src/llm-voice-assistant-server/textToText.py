@@ -5,6 +5,7 @@ import nltk
 from datetime import datetime
 import os
 import json
+import requests
 
 class textToText:
     def __init__(self, llm_model, llm_api, llm_api_key):
@@ -17,9 +18,12 @@ class textToText:
         self.llm_model = llm_model
 
         self.client = OpenAI(
-            base_url = llm_api,
+            base_url = f"{llm_api}/v1",
             api_key = llm_api_key, # Required even if unused.
         )
+        
+        # If Ollama is installed automatically download LLM.
+        self.ollamaDownloadModel(llm_api, llm_model)
 
         nltk.download('punkt_tab')
 
@@ -28,6 +32,29 @@ class textToText:
         for message in messages:
             message = 0
         os.remove("chat-history/workAround.json")
+
+    def ollamaDownloadModel(self, llm_api, llm_model):
+        try:
+            ollama_url = f"{llm_api}/api/show"
+
+            response = requests.post(ollama_url, data=json.dumps({"model": llm_model}), stream=False)
+
+            if response.status_code == 404:
+                ollama_url = f"{llm_api}/api/pull"
+
+                response = requests.post(ollama_url, data=json.dumps({"model": llm_model}), stream=True)
+
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        chunk_data = json.loads(chunk.decode('utf-8'))
+                        completed = chunk_data.get("completed")
+                        total = chunk_data.get("total")
+                        if completed is not None:
+                            percentage = round((completed / total) * 100, 2)
+                            print(f"\x1b[2KDownloading {llm_model}: {percentage}%", end="\r")
+
+        except requests.exceptions.ConnectionError:
+            print("Ollama isn't installed so model can't be downloaded automatically")
 
     def langDetect(self, text, transcription):
         language = self.detector.detect_language_of(text)

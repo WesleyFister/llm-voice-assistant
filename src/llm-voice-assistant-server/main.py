@@ -16,7 +16,7 @@ class llmVoiceAssistantServer:
         parser.add_argument('-sm', '--stt-model', type=str, default='small', help='List of available STT models: tiny.en, tiny, base.en, base, small.en, small, medium.en, medium, large-v1, large-v2, large-v3, large, distil-large-v2, distil-medium.en, distil-small.en, distil-large-v3, large-v3-turbo')
         parser.add_argument('-lm', '--llm-model', type=str, default='hf.co/bartowski/Qwen2.5-7B-Instruct-GGUF:Q4_K_M', help='Any GGUF LLM on Hugging Face')
         parser.add_argument('-tm', '--tts-model', type=str, default='piper-tts', help='Select the TTS engine to use. (Does nothing right now)')
-        parser.add_argument('-la', '--llm-api', type=str, default='http://localhost:11434/v1', help='The URL for the OpenAI API endpoint (Default: http://localhost:11434/v1)')
+        parser.add_argument('-la', '--llm-api', type=str, default='http://localhost:11434', help='The URL for the OpenAI API endpoint (Default: http://localhost:11434/v1)')
         parser.add_argument('-lk', '--llm-api-key', type=str, default='WE_WONT_LET_THOSE_FUCKERS_TAKE_THIS_LAND!', help='The OpenAI API key')
         parser.add_argument('-ip', '--ip-address', type=str, default='127.0.0.1', help='Listening address for the audio recording server')
         parser.add_argument('-p', '--port', type=int, default='5001', help='port for the audio recording server')
