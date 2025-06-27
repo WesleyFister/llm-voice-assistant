@@ -16,14 +16,21 @@ class textToText:
         self.detector = LanguageDetectorBuilder.from_languages(*languages).with_preloaded_language_models().with_minimum_relative_distance(0.3).build() # Eager load language detection models.
         
         self.llm_model = llm_model
-
-        self.client = OpenAI(
-            base_url = f"{llm_api}/v1",
-            api_key = llm_api_key, # Required even if unused.
-        )
         
         # If Ollama is installed automatically download LLM.
-        self.ollamaDownloadModel(llm_api, llm_model)
+        ollama_installed = self.ollamaDownloadModel(llm_api, llm_model)
+
+        if ollama_installed == True:
+            self.client = OpenAI(
+                base_url = f"{llm_api}/v1",
+                api_key = llm_api_key, # Required even if unused.
+            )
+
+        else:
+            self.client = OpenAI(
+                base_url = f"http://{llm_api}/v1",
+                api_key = llm_api_key, # Required even if unused.
+            )
 
         nltk.download('punkt_tab')
 
@@ -53,8 +60,12 @@ class textToText:
                             percentage = round((completed / total) * 100, 2)
                             print(f"\x1b[2KDownloading {llm_model}: {percentage}%", end="\r")
 
-        except requests.exceptions.ConnectionError:
+            return True
+
+        except requests.exceptions.RequestException:
             print("Ollama isn't installed so model can't be downloaded automatically")
+
+            return False
 
     def langDetect(self, text, transcription):
         language = self.detector.detect_language_of(text)
@@ -112,18 +123,19 @@ class textToText:
         sentence = 1
         response = ""
         for chunk in stream:
-            part = chunk.choices[0].delta.content
-            response = response + part
+            if chunk.choices[0].delta.content != None:
+                part = chunk.choices[0].delta.content
+                response = response + part
             
-            # Chunk the response into sentences and yield each one as it is completed
-            sentences = sent_tokenize(response)
-            if len(sentences) > sentence:
-                language = self.langDetect(sentences[sentence - 1], transcription)
-                yield { "token": part, "sentence": sentences[sentence - 1], "language": language }
-                sentence += 1
-            
-            else:
-                yield { "token": part, "sentence": "" }
+                # Chunk the response into sentences and yield each one as it is completed
+                sentences = sent_tokenize(response)
+                if len(sentences) > sentence:
+                    language = self.langDetect(sentences[sentence - 1], transcription)
+                    yield { "token": part, "sentence": sentences[sentence - 1], "language": language }
+                    sentence += 1
+                
+                else:
+                    yield { "token": part, "sentence": "" }
 
         language = self.langDetect(sentences[sentence - 1], transcription)
         yield { "token": part, "sentence": sentences[sentence - 1], "language": language }

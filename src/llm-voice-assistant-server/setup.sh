@@ -25,4 +25,4 @@ pip install -r requirements.txt
 
 # You have to uninstall onnxruntime first before installing onnxruntime-gpu.
 pip uninstall onnxruntime -y
-pip install "onnxruntime-gpu==1.20.1"
+pip install "onnxruntime-gpu==1.22.0"
