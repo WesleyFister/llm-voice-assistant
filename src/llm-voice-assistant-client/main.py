@@ -21,6 +21,10 @@ from openai import OpenAI
 
 class llmVoiceAssistantClient():
     def __init__(self):
+        os.makedirs("audio-input", exist_ok=True)
+        os.makedirs("audio-response", exist_ok=True)
+        os.makedirs("chat-history", exist_ok=True)
+        
         parser = argparse.ArgumentParser(description='This is the client side code for LLM Voice Assistant')
 
         parser.add_argument('-v', '--vad-initial-delay', type=float, default='10', help='The delay in seconds before audio stops recording when no voice is detected ()')
@@ -52,9 +56,6 @@ class llmVoiceAssistantClient():
         self.client_transcribe = OpenAI(base_url=args.stt_api, api_key=args.stt_api_key)
         self.textToText = textToText(base_url=args.llm_api, llm_api_key=args.llm_api_key, llm_model=args.llm_model)
         self.textToSpeech = textToSpeech(base_url=args.stt_api, api_key=args.stt_api_key)
-
-        os.makedirs("audio-input", exist_ok=True)
-        os.makedirs("audio-response", exist_ok=True)
 
         # Have whisper transcribe something to preload it into memory
         with Path("workAround.wav").open("rb") as audio_file:
