@@ -1,21 +1,5 @@
 {
   "language": {
-    "ar": {
-      "ar_JO": {
-        "kareem": {
-          "low": {
-            "model": "ar_JO-kareem-low",
-            "enabled": false,
-            "auto_start": false
-          },
-          "medium": {
-            "model": "ar_JO-kareem-medium",
-            "enabled": true,
-            "auto_start": false
-          }
-        }
-      }
-    },
     "ca": {
       "ca_ES": {
         "upc_ona": {
@@ -168,8 +152,8 @@
           },
           "medium": {
             "model": "en_GB-alan-medium",
-            "enabled": false,
-            "auto_start": false
+            "enabled": true,
+            "auto_start": true
           }
         },
         "alba": {
@@ -250,8 +234,8 @@
         "arctic": {
           "medium": {
             "model": "en_US-arctic-medium",
-            "enabled": true,
-            "auto_start": true
+            "enabled": false,
+            "auto_start": false
           }
         },
         "bryce": {
