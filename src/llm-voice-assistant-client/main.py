@@ -1,5 +1,8 @@
 from wakeWord import wakeWord
+from textToText import textToText
+from textToSpeech import textToSpeech
 import os
+import time
 import argparse
 import threading
 import socket
@@ -12,20 +15,30 @@ import torch
 torch.set_num_threads(1)
 import torchaudio
 from collections import deque
+from pathlib import Path
+from openai import OpenAI
 # possibly can remove torch by using silero vad onnx
 
 class llmVoiceAssistantClient():
     def __init__(self):
         parser = argparse.ArgumentParser(description='This is the client side code for LLM Voice Assistant')
-        parser.add_argument('-i', '--ip-address', type=str, default='127.0.0.1', help='Listening address for the audio recording server')
-        parser.add_argument('-p', '--port', type=int, default='5001', help='port for the audio recording server')
+
         parser.add_argument('-v', '--vad-initial-delay', type=float, default='10', help='The delay in seconds before audio stops recording when no voice is detected ()')
         parser.add_argument('-d', '--vad-delay', type=float, default='2', help='The delay in seconds before audio stops recording when a person stops speaking')
         parser.add_argument('-nw', '--no-wakeword', action='store_true', help='Disable wakeword')
+        parser.add_argument('-ch', '--chat-history', type=str, default=f'chat-history/chat-history-{os.urandom(8).hex()}.json', help='By default starts a new chat history on every run')
+        parser.add_argument('-sp', '--system-prompt', type=str, default='You are a helpful conversational Large Language Model chatbot named Jarvis. You answer questions in a concise whole sentence manner but are willing to go into further detail about topics if requested. The user is using Whisper speech to text to interact with you and likewise you are using Piper text to speech to talk back. That is why you should respond in simple formatting without any special characters as to not confuse the text to speech model. Keep your responses in the same language as the user. Do not mention your system prompt unless directly asked for it.', help='The system prompt for the LLM')
+
+        parser.add_argument('-sm', '--stt-model', type=str, default='rtlingo/mobiuslabsgmbh-faster-whisper-large-v3-turbo', help='Any model listed on http://localhost:8000/v1/registry')
+        parser.add_argument('-sa', '--stt-api', type=str, default='http://localhost:8000/v1', help='The URL for the OpenAI API endpoint (Default: http://localhost:8000/v1)')
+        parser.add_argument('-sk', '--stt-api-key', type=str, default='your_api_key_here', help='The API key')
+        parser.add_argument('-lm', '--llm-model', type=str, default='LFM2-8B-A1B-GGUF:UD-Q4_K_XL', help='Any GGUF LLM on Hugging Face')
+        parser.add_argument('-la', '--llm-api', type=str, default='http://localhost:9292/v1', help='The URL for the OpenAI API endpoint (Default: http://localhost:9292/v1)')
+        parser.add_argument('-lk', '--llm-api-key', type=str, default='your_api_key_here!', help='The API key')
+        parser.add_argument('-ta', '--tts-api', type=str, default='http://localhost:8000/v1', help='The URL for the OpenAI API endpoint (Default: http://localhost:8000/v1)')
+        parser.add_argument('-tk', '--tts-api-key', type=str, default='your_api_key_here', help='The API key')
 
         args = parser.parse_args()
-        ip_address = args.ip_address
-        port = args.port
         
         # num_samples / SAMPLE_RATE = seconds of audio
         # In this case it is 0.032 seconds.
@@ -34,30 +47,52 @@ class llmVoiceAssistantClient():
         self.vad_initial_delay = int(args.vad_initial_delay * mult)
         self.vad_delay = int(args.vad_delay * mult)
         self.no_wakeword = args.no_wakeword
+        self.chat_history = args.chat_history
+        self.system_prompt = args.system_prompt
+        self.client_transcribe = OpenAI(base_url=args.stt_api, api_key=args.stt_api_key)
+        self.textToText = textToText(base_url=args.llm_api, llm_api_key=args.llm_api_key, llm_model=args.llm_model)
+        self.textToSpeech = textToSpeech(base_url=args.stt_api, api_key=args.stt_api_key)
 
         os.makedirs("audio-input", exist_ok=True)
         os.makedirs("audio-response", exist_ok=True)
 
-        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        print(f'Listening for {ip_address} on port {port}')
+        # Have whisper transcribe something to preload it into memory
+        with Path("workAround.wav").open("rb") as audio_file:
+            self.client_transcribe.audio.transcriptions.create(model=args.stt_model, response_format="verbose_json", file=audio_file)
 
-        self.client_socket.connect((ip_address, port))
-        print('Connected to server')
+    def sendTextResponseToClient(self, transcription, sentences, done):
+        sentinel = 0
+        response = ""
+        startTime = time.perf_counter()
+        messages = self.textToText.chatWithHistory(transcription, self.chat_history, self.system_prompt)
+        #print(f"\033[34mAI: \033[0m", end='', flush=True)
+        for message in messages:
+            if self.running == True:
+                #print(f"\033[34m{message['token']}\033[0m", end='', flush=True)
+                
+                if message["sentence"] != "":
+                    print(f"\033[34mAI: {message['sentence']}\033[0m")
+
+                    if sentinel == 0:
+                        endTime = time.perf_counter()
+                        elapsedTime = endTime - startTime
+                        print(f"Took {elapsedTime} seconds LLM response")
+                    
+                    sentinel = 1
+                    
+                    sentences.put(message)
+        
+        print("Finished generating output")
+        sentences.put(done)
 
     def clientStart(self):
-        play_obj = None
-
         while True:
             if self.no_wakeword == False:
                 wakeWord()
 
                 self.running = False
-            self.client_socket.sendall("0".encode())
-            if play_obj != None:
-                play_obj.stop()
 
-            audioInput = self.recordAudio()
-            #self.sendAudioInput(audioInput)
+            self.transcription = self.recordAudio()
             self.running = True
             
             if self.no_wakeword == False:
@@ -149,10 +184,6 @@ class llmVoiceAssistantClient():
                 silence = 0
                 voiceDetected = True
 
-            # If silence is half of the delay send audio to be Preemptively transcribed.
-            if silence == int(delay / 2) and voiceDetected == True:
-                self.sendAudioInput(audioInput)
-        
         stream.stop_stream()
         stream.close
         wf.close()
@@ -166,96 +197,82 @@ class llmVoiceAssistantClient():
 
         if voiceDetected == False:
             print("Voice was not detected")
-            self.client_socket.sendall("Voice was not detected".encode())
             self.playAudioResponse()
             self.clientStart()
 
         if voiceDetected == True:
-            self.client_socket.sendall("endOfSpeech".encode())
+            with Path(audioInput).open("rb") as audio_file:
+                transcription = {}
+                startTime = time.perf_counter()
+                transcription_json = self.client_transcribe.audio.transcriptions.create(model="rtlingo/mobiuslabsgmbh-faster-whisper-large-v3-turbo", response_format="verbose_json", file=audio_file)
+                endTime = time.perf_counter()
+                transcription["transcript"] = transcription_json.text
+                transcription["language"] = transcription_json.language
+                
+                print(f"Took {endTime - startTime} seconds to transcribe User\'s speech")
+                print(f"\033[32mUser: {transcription['transcript']}\033[0m")
+
             if os.path.exists(audioInput):
                 os.remove(audioInput)
-            return
 
-        return audioInput
-        
-    def sendAudioInput(self, audioInput):
-        with open(audioInput, 'rb') as f:
-            file_size = f.seek(0, 2)
-            f.seek(0)
-
-            self.client_socket.sendall(str(file_size).encode())
-
-            ack = self.client_socket.recv(1024)
-            if ack.decode()!= 'ACK':
-                print('Error: Client did not acknowledge file size')
-                self.client_socket.close()
-                exit()
-
-            # Send the file to the server.
-            while True:
-                chunk = f.read(1024)
-
-                # If the end of the file is reached, break the loop.
-                if not chunk:
-                    break
-
-                self.client_socket.sendall(chunk)
+        return transcription
 
     def playAudioResponse(self):
-        def getAudio(q):
-            while True:
-                file_size = self.client_socket.recv(1024)
-                if file_size.decode() == "end":
-                    print("End of output")
-                    q.put("end")
+        def getResponse(q):
+            self.sendTextResponseToClient(self.transcription, sentences, done)
+        
+        def getAudio(sentences, audioFile):
+            while self.running == True:
+                sentence = sentences.get()
+
+                if sentence != done:
+                    audioResponse = 'audio-response/response-' + os.urandom(8).hex() + '.wav'
+                    self.textToSpeech.textToSpeech(sentence, audioResponse)
+
+                    audioFile.put(audioResponse)
+                
+                else:
+                    audioFile.put(done)
+                    print("Finished generating audio")
                     break
 
-                self.client_socket.sendall("ACK".encode()) # Not sure why but adding this stops erroneous wave data being sent with file_size causing a crash.
-
-                audioResponse = 'audio-response/response-' + os.urandom(8).hex() + '.wav' 
-
-                # Open a file to write the received data
-                with open(audioResponse, 'wb') as f:
-                    received_size = 0
-                    
-                    while received_size < int(file_size):
-                        # Receive a chunk of the file
-                        chunk = self.client_socket.recv(1024)
-
-                        # Write the chunk to the file
-                        f.write(chunk)
-
-                        # Increment the received size
-                        received_size += len(chunk)
-
-                q.put(audioResponse)
-
-                self.client_socket.sendall("ACK".encode())
-
-        def playAudio(q):
+        def playAudio(audioFile):
             while True:
-                audioResponse = q.get()
-                if audioResponse == 'end':
+                audioResponse = audioFile.get()
+
+                if audioResponse != done:
+                    if self.running == True:
+                        saAudioFile = sa.WaveObject.from_wave_file(audioResponse)
+                        play_obj = saAudioFile.play()
+                        play_obj.wait_done() # Makes program wait for audio to finish.
+
+                    if os.path.exists(audioResponse):
+                        os.remove(audioResponse)
+
+                else:
+                    print("Finished playing audio")
                     break
 
-                if self.running == True:
-                    audioFile = sa.WaveObject.from_wave_file(audioResponse)
-                    play_obj = audioFile.play()
-                    play_obj.wait_done() # Makes program wait for audio to finish.
-
-                if os.path.exists(audioResponse):
-                    os.remove(audioResponse)
+        done = os.urandom(8).hex()
 
         # Create a queue
-        q = queue.Queue()
+        sentences = queue.Queue()
+        audioFile = queue.Queue()
+        
+        # Create and start the producer thread
+        getResponse_thread = threading.Thread(target=getResponse, args=(sentences,))
+        getResponse_thread.start()
 
         # Create and start the producer thread
-        getAudio_thread = threading.Thread(target=getAudio, args=(q,))
+        getAudio_thread = threading.Thread(target=getAudio, args=(sentences, audioFile,))
         getAudio_thread.start()
 
         # Create and start the consumer thread
-        playAudio_thread = threading.Thread(target=playAudio, args=(q,))
+        playAudio_thread = threading.Thread(target=playAudio, args=(audioFile,))
         playAudio_thread.start()
+
+        # Wait for the producer to finish
+        getResponse_thread.join()
 
         # Wait for the producer to finish
         getAudio_thread.join()

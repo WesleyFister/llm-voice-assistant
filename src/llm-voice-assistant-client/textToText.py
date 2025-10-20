@@ -8,7 +8,7 @@ import json
 import requests
 
 class textToText:
-    def __init__(self, llm_model, llm_api, llm_api_key):
+    def __init__(self, llm_model, base_url, llm_api_key):
         # Supported languages by TTS
         languagesPiperTTS = [Language.ARABIC, Language.CATALAN, Language.CZECH, Language.WELSH, Language.DANISH, Language.GERMAN, Language.GREEK, Language.ENGLISH, Language.SPANISH, Language.PERSIAN, Language.FINNISH, Language.FRENCH, Language.HUNGARIAN, Language.ICELANDIC, Language.ITALIAN, Language.GEORGIAN, Language.KAZAKH, Language.DUTCH, Language.POLISH, Language.PORTUGUESE, Language.ROMANIAN, Language.RUSSIAN, Language.SLOVAK, Language.SERBIAN, Language.SWEDISH, Language.SWAHILI, Language.TURKISH, Language.UKRAINIAN, Language.VIETNAMESE, Language.CHINESE]
         languages = languagesPiperTTS
@@ -18,17 +18,17 @@ class textToText:
         self.llm_model = llm_model
         
         # If Ollama is installed automatically download LLM.
-        ollama_installed = self.ollamaDownloadModel(llm_api, llm_model)
+        ollama_installed = self.ollamaDownloadModel(base_url, llm_model)
 
         if ollama_installed == True:
             self.client = OpenAI(
-                base_url = f"{llm_api}/v1",
+                base_url = base_url,
                 api_key = llm_api_key, # Required even if unused.
             )
 
         else:
             self.client = OpenAI(
-                base_url = f"http://{llm_api}/v1",
+                base_url = base_url,
                 api_key = llm_api_key, # Required even if unused.
             )
 
@@ -40,14 +40,14 @@ class textToText:
             message = 0
         os.remove("chat-history/workAround.json")
 
-    def ollamaDownloadModel(self, llm_api, llm_model):
+    def ollamaDownloadModel(self, base_url, llm_model):
         try:
-            ollama_url = f"{llm_api}/api/show"
+            ollama_url = f"{base_url}/api/show"
 
             response = requests.post(ollama_url, data=json.dumps({"model": llm_model}), stream=False)
 
             if response.status_code == 404:
-                ollama_url = f"{llm_api}/api/pull"
+                ollama_url = f"{base_url}/api/pull"
 
                 response = requests.post(ollama_url, data=json.dumps({"model": llm_model}), stream=True)
 
@@ -77,7 +77,7 @@ class textToText:
         language = transcription["language"] if language == None else language
         return language.lower()
 
-    def chatWithHistory(self, transcription, chatHistoryFile, systemPrompt):
+    def chatWithHistory(self, transcription, chatHistoryFile, systemPrompt=""):
         systemPrompt = f'{systemPrompt} Current date: {datetime.now().strftime("%Y-%m-%d (%A)")} Current time: {datetime.now().strftime("%I:%M %p")}'
         
         # Try to load the chat history from a file

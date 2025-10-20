@@ -6,3 +6,6 @@ openwakeword==0.6.0
 pyaudio==0.2.14
 requests==2.32.4
 simpleaudio==1.0.4
+openai==2.5.0
+nltk==3.9.1
+lingua-language-detector==2.1.1

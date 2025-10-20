@@ -168,8 +168,8 @@
           },
           "medium": {
             "model": "en_GB-alan-medium",
-            "enabled": true,
-            "auto_start": true
+            "enabled": false,
+            "auto_start": false
           }
         },
         "alba": {
@@ -250,8 +250,8 @@
         "arctic": {
           "medium": {
             "model": "en_US-arctic-medium",
-            "enabled": false,
-            "auto_start": false
+            "enabled": true,
+            "auto_start": true
           }
         },
         "bryce": {

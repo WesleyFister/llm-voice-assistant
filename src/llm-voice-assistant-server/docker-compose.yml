@@ -1,0 +1,132 @@
+networks:
+  speaches_network:
+    driver: bridge
+    name: speaches_network
+  llama-swap_network:
+    driver: bridge
+    name: llama-swap_network
+
+volumes:
+  huggingface-hub: Null
+  models: {}
+
+configs:
+  llama-swap-config:
+    content: >
+      healthCheckTimeout: 3600
+
+      macros:
+        "latest-llama": >
+          /app/llama-server
+          --port 9999
+
+      # Not setting --no-warmup causes model load times to dramatically
+      increase.
+
+      models:
+        # For testing
+        "LFM2-8B-A1B-GGUF:UD-Q4_K_XL":
+          proxy: "http://127.0.0.1:9999"
+          cmd: >
+            $${latest-llama}
+            -hf unsloth/LFM2-8B-A1B-GGUF:UD-Q4_K_XL
+            -ngl 99
+            --ctx-size 8192
+            --jinja
+            --flash-attn auto
+            --no-warmup
+
+        "Llama-3.3-70B-Instruct-ablated-GGUF:IQ4_XS":
+          proxy: "http://127.0.0.1:9999"
+          cmd: >
+            $${latest-llama}
+            -hf bartowski/Llama-3.3-70B-Instruct-ablated-GGUF:IQ4_XS
+            -ngl 99
+            --ctx-size 24384
+            --jinja
+            --flash-attn auto
+
+services:
+  init-speaches:
+    command: |
+      /bin/bash -c '
+        uv tool run speaches-cli model download speaches-ai/Kokoro-82M-v1.0-ONNX
+        uv tool run speaches-cli model download rtlingo/mobiuslabsgmbh-faster-whisper-large-v3-turbo
+      '
+    container_name: init-speaches
+    depends_on:
+      speaches:
+        condition: service_healthy
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities:
+                - gpu
+              driver: nvidia
+    environment:
+      - SPEACHES_BASE_URL=http://speaches:8000
+    image: ghcr.io/speaches-ai/speaches:latest-cuda-12.4.1
+    networks:
+      - speaches_network
+    runtime: nvidia
+    volumes:
+      - huggingface-hub:/home/ubuntu/.cache/huggingface/hub
+
+  speaches:
+    container_name: speaches
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities:
+                - gpu
+              driver: nvidia
+    environment:
+      - enable_ui=True
+      - log_level=info
+      - WHISPER__TTL=-1
+      - WHISPER__MODEL=rtlingo/mobiuslabsgmbh-faster-whisper-large-v3-turbo
+      - WHISPER__compute_type=int8_float32
+    healthcheck:
+      interval: 30s
+      retries: 3
+      start_period: 40s
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - http://localhost:8000/health
+      timeout: 10s
+    image: ghcr.io/speaches-ai/speaches:latest-cuda-12.4.1
+    networks:
+      - speaches_network
+    ports:
+      - '8000:8000'
+    restart: unless-stopped
+    runtime: nvidia
+    volumes:
+      - huggingface-hub:/home/ubuntu/.cache/huggingface/hub
+
+  llama-swap:
+    cap_add:
+      - IPC_LOCK
+    configs:
+      - source: llama-swap-config
+        target: /app/config.yaml
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities:
+                - gpu
+              count: all
+              driver: nvidia
+    image: ghcr.io/mostlygeek/llama-swap:cuda
+    networks:
+      - llama-swap_network
+    ports:
+      - '9292:8080'
+    restart: unless-stopped
+    volumes:
+      - models:/root/.cache/llama.cpp/

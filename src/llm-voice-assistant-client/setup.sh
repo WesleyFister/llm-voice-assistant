@@ -13,7 +13,7 @@ elif [ -x "$(command -v pacman)" ]; then
 fi
 
 pyenv install 3.11 --skip-existing
-pyenv global 3.11.10
+pyenv global 3.11.14
 pyenv exec python3.11 -m venv venv
 
 source venv/bin/activate
