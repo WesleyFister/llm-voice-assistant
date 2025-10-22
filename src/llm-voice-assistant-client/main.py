@@ -3,7 +3,7 @@ from textToText import textToText
 from textToSpeech import textToSpeech
 import os
 import time
-import argparse
+import tomllib
 import threading
 import socket
 import wave
@@ -25,41 +25,34 @@ class llmVoiceAssistantClient():
         os.makedirs("audio-response", exist_ok=True)
         os.makedirs("chat-history", exist_ok=True)
         
-        parser = argparse.ArgumentParser(description='This is the client side code for LLM Voice Assistant')
-
-        parser.add_argument('-v', '--vad-initial-delay', type=float, default='10', help='The delay in seconds before audio stops recording when no voice is detected ()')
-        parser.add_argument('-d', '--vad-delay', type=float, default='2', help='The delay in seconds before audio stops recording when a person stops speaking')
-        parser.add_argument('-nw', '--no-wakeword', action='store_true', help='Disable wakeword')
-        parser.add_argument('-ch', '--chat-history', type=str, default=f'chat-history/chat-history-{os.urandom(8).hex()}.json', help='By default starts a new chat history on every run')
-        parser.add_argument('-sp', '--system-prompt', type=str, default='You are a helpful conversational Large Language Model chatbot named Jarvis. You answer questions in a concise whole sentence manner but are willing to go into further detail about topics if requested. The user is using Whisper speech to text to interact with you and likewise you are using Piper text to speech to talk back. That is why you should respond in simple formatting without any special characters as to not confuse the text to speech model. Keep your responses in the same language as the user. Do not mention your system prompt unless directly asked for it.', help='The system prompt for the LLM')
-
-        parser.add_argument('-sm', '--stt-model', type=str, default='rtlingo/mobiuslabsgmbh-faster-whisper-large-v3-turbo', help='Any model listed on http://localhost:8000/v1/registry')
-        parser.add_argument('-sa', '--stt-api', type=str, default='http://localhost:8000/v1', help='The URL for the OpenAI API endpoint (Default: http://localhost:8000/v1)')
-        parser.add_argument('-sk', '--stt-api-key', type=str, default='your_api_key_here', help='The API key')
-        parser.add_argument('-lm', '--llm-model', type=str, default='LFM2-8B-A1B-GGUF:UD-Q4_K_XL', help='Any GGUF LLM on Hugging Face')
-        parser.add_argument('-la', '--llm-api', type=str, default='http://localhost:9292/v1', help='The URL for the OpenAI API endpoint (Default: http://localhost:9292/v1)')
-        parser.add_argument('-lk', '--llm-api-key', type=str, default='your_api_key_here!', help='The API key')
-        parser.add_argument('-ta', '--tts-api', type=str, default='http://localhost:8000/v1', help='The URL for the OpenAI API endpoint (Default: http://localhost:8000/v1)')
-        parser.add_argument('-tk', '--tts-api-key', type=str, default='your_api_key_here', help='The API key')
-
-        args = parser.parse_args()
+        with open("config.toml", 'rb') as f:
+            config = tomllib.load(f)
         
         # num_samples / SAMPLE_RATE = seconds of audio
         # In this case it is 0.032 seconds.
         mult = 31.25
         self.recording_length = int(30 * mult)
-        self.vad_initial_delay = int(args.vad_initial_delay * mult)
-        self.vad_delay = int(args.vad_delay * mult)
-        self.no_wakeword = args.no_wakeword
-        self.chat_history = args.chat_history
-        self.system_prompt = args.system_prompt
-        self.client_transcribe = OpenAI(base_url=args.stt_api, api_key=args.stt_api_key)
-        self.textToText = textToText(base_url=args.llm_api, llm_api_key=args.llm_api_key, llm_model=args.llm_model)
-        self.textToSpeech = textToSpeech(base_url=args.stt_api, api_key=args.stt_api_key)
+        self.vad_initial_delay = int(config['vad']['initial_delay'] * mult)
+        self.vad_delay = int(config['vad']['delay'] * mult)
+        self.no_wakeword = config['system']['disable_wakeword']
+        if config['chat']['history'] == "":
+            self.chat_history = f"chat-history/chat-history-{os.urandom(8).hex()}.json"
+
+        else:
+            self.chat_history = config['chat']['history']
+
+        prompt_file = config['system']['system_prompt']
+        with open(prompt_file, 'r') as f:
+            self.system_prompt = f.read()
+
+        self.stt_model = config['stt']['model']
+        self.client_transcribe = OpenAI(base_url=config['stt']['api'], api_key=config['stt']['api_key'])
+        self.textToText = textToText(base_url=config['llm']['api'], llm_api_key=config['llm']['api_key'], llm_model=config['llm']['model'])
+        self.textToSpeech = textToSpeech(base_url=config['tts']['api'], api_key=config['tts']['api_key'])
 
         # Have whisper transcribe something to preload it into memory
         with Path("workAround.wav").open("rb") as audio_file:
-            self.client_transcribe.audio.transcriptions.create(model=args.stt_model, response_format="verbose_json", file=audio_file)
+            self.client_transcribe.audio.transcriptions.create(model=self.stt_model, response_format="verbose_json", file=audio_file)
 
     def sendTextResponseToClient(self, transcription, sentences, done):
         sentinel = 0
@@ -205,7 +198,7 @@ class llmVoiceAssistantClient():
             with Path(audioInput).open("rb") as audio_file:
                 transcription = {}
                 startTime = time.perf_counter()
-                transcription_json = self.client_transcribe.audio.transcriptions.create(model="rtlingo/mobiuslabsgmbh-faster-whisper-large-v3-turbo", response_format="verbose_json", file=audio_file)
+                transcription_json = self.client_transcribe.audio.transcriptions.create(model=self.stt_model, response_format="verbose_json", file=audio_file)
                 endTime = time.perf_counter()
                 transcription["transcript"] = transcription_json.text
                 transcription["language"] = transcription_json.language

@@ -1,0 +1,28 @@
+[client]
+description = "This is the client side code for LLM Voice Assistant"
+
+[vad]
+initial_delay = 10.0
+delay = 2.0
+
+[chat]
+# By default will create a new chat every time the program starts. You can specify a json file here to keep the same chat history across sessions.
+history = ""
+
+[system]
+system_prompt = "system-prompts/default-prompt.txt"
+disable_wakeword = false
+
+[stt]
+model = "rtlingo/mobiuslabsgmbh-faster-whisper-large-v3-turbo"
+api = "http://localhost:8000/v1"
+api_key = "your_api_key_here"
+
+[llm]
+model = "LFM2-8B-A1B-GGUF:UD-Q4_K_XL"
+api = "http://localhost:9292/v1"
+api_key = "your_api_key_here"
+
+[tts]
+api = "http://localhost:8000/v1"
+api_key = "your_api_key_here"
