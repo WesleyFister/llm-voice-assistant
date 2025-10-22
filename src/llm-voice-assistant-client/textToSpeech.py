@@ -7,18 +7,20 @@ from pathlib import Path
 
 class textToSpeech:
     def __init__(self, base_url, api_key):        
-        model_dir = './piper-models/'
+        model_dir = './tts-models/'
         
         self.openai = OpenAI(base_url=base_url, api_key=api_key)
         self.base_url = base_url
 
         self.file = open(model_dir + 'piper-models.json')
-        self.json_models = json.load(self.file)
+        self.piper_json_models = json.load(self.file)
+        self.file = open(model_dir + 'kokoro-models.json')
+        self.kokoro_json_models = json.load(self.file)
 
         self.piperModels = {}
         self.download_model()
 
-    def download_model(self, text={"language": None}, model_dir='./piper-models/'):
+    def download_model(self, text={"language": None}, model_dir='./tts-models/'):
         # Download Piper TTS model if none are found.
         if self.piperModels == {}:
             download = True
@@ -34,7 +36,7 @@ class textToSpeech:
                     break
                 
         if download == True:
-            for language, locale in self.json_models["language"].items():
+            for language, locale in self.piper_json_models["language"].items():
                 for locale, model_name in locale.items():
                     for model_name, model_quality in model_name.items():
                         for model_quality, model_info in model_quality.items():
@@ -46,8 +48,8 @@ class textToSpeech:
                                     # Enable auto start for the loaded model
                                     if model_info["auto_start"] == False:
                                         model_info["auto_start"] = True
-                                        json_object = json.dumps(self.json_models, indent=2)
-                                        with open("./piper-models/piper-models.json", "w") as file:
+                                        json_object = json.dumps(self.piper_json_models, indent=2)
+                                        with open("./tts-models/piper-models.json", "w") as file:
                                             file.write(json_object)
 
                                 # Load all models with auto_start enabled
@@ -69,19 +71,36 @@ class textToSpeech:
 
         text = self.cleanText(text)
         
-        for language in self.json_models["language"]:
+        for language in self.piper_json_models["language"]:
             if language == text["language"]:
-                languageFound = True
+                languageFoundPiper = True
                 break
 
             else:
-                languageFound = False
+                languageFoundPiper = False
+        
+        if languageFoundPiper == False:
+            for language in self.kokoro_json_models["language"]:
+                if language == text["language"]:
+                    languageFoundKokoro = True
+                    break
 
-        if languageFound == True:
-            for locale, model_name in self.json_models["language"][text["language"]].items():
+                else:
+                    languageFoundKokoro = False
+
+        if languageFoundPiper == True:
+            for locale, model_name in self.piper_json_models["language"][text["language"]].items():
                 for model_name, model_quality in model_name.items():
                     for model_quality, model_info in model_quality.items():
                         if model_info["enabled"] == True:
-                            res = self.openai.audio.speech.create(model=f"speaches-ai/piper-{model_info['model']}", voice="voice_id", input=text["sentence"], response_format="wav")
+                            res = self.openai.audio.speech.create(model=f"speaches-ai/piper-{model_info['model']}", voice=f"speaches-ai/piper-{model_info['model']}", input=text["sentence"], response_format="wav")
                             with Path(file_name).open("wb") as f:
                                 f.write(res.response.read())
+        
+        elif languageFoundKokoro == True:
+            for locale, model_name in self.kokoro_json_models["language"][text["language"]].items():
+                for model_name, model_info in model_name.items():
+                    if model_info["enabled"] == True:
+                        res = self.openai.audio.speech.create(model="speaches-ai/Kokoro-82M-v1.0-ONNX", voice=model_info['model'], input=text["sentence"], response_format="wav")
+                        with Path(file_name).open("wb") as f:
+                            f.write(res.response.read())

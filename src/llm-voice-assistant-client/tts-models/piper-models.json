@@ -1,0 +1,962 @@
+{
+  "language": {
+    "ca": {
+      "ca_ES": {
+        "upc_ona": {
+          "x_low": {
+            "model": "ca_ES-upc_ona-x_low",
+            "enabled": false,
+            "auto_start": false
+          },
+          "medium": {
+            "model": "ca_ES-upc_ona-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        },
+        "upc_pau": {
+          "x_low": {
+            "model": "ca_ES-upc_pau-x_low",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "cs": {
+      "cs_CZ": {
+        "jirka": {
+          "low": {
+            "model": "cs_CZ-jirka-low",
+            "enabled": false,
+            "auto_start": false
+          },
+          "medium": {
+            "model": "cs_CZ-jirka-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "cy": {
+      "cy_GB": {
+        "gwryw_gogleddol": {
+          "medium": {
+            "model": "cy_GB-gwryw_gogleddol-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "da": {
+      "da_DK": {
+        "talesyntese": {
+          "medium": {
+            "model": "da_DK-talesyntese-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "de": {
+      "de_DE": {
+        "eva_k": {
+          "x_low": {
+            "model": "de_DE-eva_k-x_low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "karlsson": {
+          "low": {
+            "model": "de_DE-karlsson-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "kerstin": {
+          "low": {
+            "model": "de_DE-kerstin-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "mls": {
+          "medium": {
+            "model": "de_DE-mls-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "pavoque": {
+          "low": {
+            "model": "de_DE-pavoque-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "ramona": {
+          "low": {
+            "model": "de_DE-ramona-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "thorsten": {
+          "low": {
+            "model": "de_DE-thorsten-low",
+            "enabled": false,
+            "auto_start": false
+          },
+          "medium": {
+            "model": "de_DE-thorsten-medium",
+            "enabled": false,
+            "auto_start": false
+          },
+          "high": {
+            "model": "de_DE-thorsten-high",
+            "enabled": true,
+            "auto_start": false
+          }
+        },
+        "thorsten_emotional": {
+          "medium": {
+            "model": "de_DE-thorsten_emotional-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "el": {
+      "el_GR": {
+        "rapunzelina": {
+          "low": {
+            "model": "el_GR-rapunzelina-low",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "en": {
+      "en_GB": {
+        "alan": {
+          "low": {
+            "model": "en_GB-alan-low",
+            "enabled": false,
+            "auto_start": false
+          },
+          "medium": {
+            "model": "en_GB-alan-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "alba": {
+          "medium": {
+            "model": "en_GB-alba-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "aru": {
+          "medium": {
+            "model": "en_GB-aru-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "cori": {
+          "medium": {
+            "model": "en_GB-cori-medium",
+            "enabled": false,
+            "auto_start": false
+          },
+          "high": {
+            "model": "en_GB-cori-high",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "jenny_dioco": {
+          "medium": {
+            "model": "en_GB-jenny_dioco-medium",
+            "enabled": true,
+            "auto_start": true
+          }
+        },
+        "northern_english_male": {
+          "medium": {
+            "model": "en_GB-northern_english_male-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "semaine": {
+          "medium": {
+            "model": "en_GB-semaine-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "southern_english_female": {
+          "low": {
+            "model": "en_GB-southern_english_female-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "vctk": {
+          "medium": {
+            "model": "en_GB-vctk-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      },
+      "en_US": {
+        "amy": {
+          "low": {
+            "model": "en_US-amy-low",
+            "enabled": false,
+            "auto_start": false
+          },
+          "medium": {
+            "model": "en_US-amy-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "arctic": {
+          "medium": {
+            "model": "en_US-arctic-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "bryce": {
+          "medium": {
+            "model": "en_US-bryce-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "danny": {
+          "low": {
+            "model": "en_US-danny-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "hfc_female": {
+          "medium": {
+            "model": "en_US-hfc_female-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "hfc_male": {
+          "medium": {
+            "model": "en_US-hfc_male-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "joe": {
+          "medium": {
+            "model": "en_US-joe-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "john": {
+          "medium": {
+            "model": "en_US-john-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "kathleen": {
+          "low": {
+            "model": "en_US-kathleen-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "kristin": {
+          "medium": {
+            "model": "en_US-kristin-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "kusal": {
+          "medium": {
+            "model": "en_US-kusal-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "l2arctic": {
+          "medium": {
+            "model": "en_US-l2arctic-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "lessac": {
+          "low": {
+            "model": "en_US-lessac-low",
+            "enabled": false,
+            "auto_start": false
+          },
+          "medium": {
+            "model": "en_US-lessac-medium",
+            "enabled": false,
+            "auto_start": false
+          },
+          "high": {
+            "model": "en_US-lessac-high",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "libritts": {
+          "high": {
+            "model": "en_US-libritts-high",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "libritts_r": {
+          "medium": {
+            "model": "en_US-libritts_r-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "ljspeech": {
+          "medium": {
+            "model": "en_US-ljspeech-medium",
+            "enabled": false,
+            "auto_start": false
+          },
+          "high": {
+            "model": "en_US-ljspeech-high",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "norman": {
+          "medium": {
+            "model": "en_US-norman-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "ryan": {
+          "low": {
+            "model": "en_US-ryan-low",
+            "enabled": false,
+            "auto_start": false
+          },
+          "medium": {
+            "model": "en_US-ryan-medium",
+            "enabled": false,
+            "auto_start": false
+          },
+          "high": {
+            "model": "en_US-ryan-high",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "es": {
+      "es_ES": {
+        "carlfm": {
+          "x_low": {
+            "model": "es_ES-carlfm-x_low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "davefx": {
+          "medium": {
+            "model": "es_ES-davefx-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "mls_10246": {
+          "low": {
+            "model": "es_ES-mls_10246-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "mls_9972": {
+          "low": {
+            "model": "es_ES-mls_9972-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "sharvard": {
+          "medium": {
+            "model": "es_ES-sharvard-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      },
+      "es_MX": {
+        "ald": {
+          "medium": {
+            "model": "es_MX-ald-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "claude": {
+          "high": {
+            "model": "es_MX-claude-high",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "fa": {
+      "fa_IR": {
+        "amir": {
+          "medium": {
+            "model": "fa_IR-amir-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        },
+        "gyro": {
+          "medium": {
+            "model": "fa_IR-gyro-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "fi": {
+      "fi_FI": {
+        "harri": {
+          "low": {
+            "model": "fi_FI-harri-low",
+            "enabled": false,
+            "auto_start": false
+          },
+          "medium": {
+            "model": "fi_FI-harri-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "fr": {
+      "fr_FR": {
+        "gilles": {
+          "low": {
+            "model": "fr_FR-gilles-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "mls": {
+          "medium": {
+            "model": "fr_FR-mls-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "mls_1840": {
+          "low": {
+            "model": "fr_FR-mls_1840-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "siwis": {
+          "low": {
+            "model": "fr_FR-siwis-low",
+            "enabled": false,
+            "auto_start": false
+          },
+          "medium": {
+            "model": "fr_FR-siwis-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "tom": {
+          "medium": {
+            "model": "fr_FR-tom-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        },
+        "upmc": {
+          "medium": {
+            "model": "fr_FR-upmc-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "hu": {
+      "hu_HU": {
+        "anna": {
+          "medium": {
+            "model": "hu_HU-anna-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "berta": {
+          "medium": {
+            "model": "hu_HU-berta-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "imre": {
+          "medium": {
+            "model": "hu_HU-imre-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "is": {
+      "is_IS": {
+        "bui": {
+          "medium": {
+            "model": "is_IS-bui-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        },
+        "salka": {
+          "medium": {
+            "model": "is_IS-salka-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "steinn": {
+          "medium": {
+            "model": "is_IS-steinn-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "ugla": {
+          "medium": {
+            "model": "is_IS-ugla-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "it": {
+      "it_IT": {
+        "paola": {
+          "medium": {
+            "model": "it_IT-paola-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "riccardo": {
+          "x_low": {
+            "model": "it_IT-riccardo-x_low",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "ka": {
+      "ka_GE": {
+        "natia": {
+          "medium": {
+            "model": "ka_GE-natia-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "kk": {
+      "kk_KZ": {
+        "iseke": {
+          "x_low": {
+            "model": "kk_KZ-iseke-x_low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "issai": {
+          "high": {
+            "model": "kk_KZ-issai-high",
+            "enabled": true,
+            "auto_start": false
+          }
+        },
+        "raya": {
+          "x_low": {
+            "model": "kk_KZ-raya-x_low",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "lb": {
+      "lb_LU": {
+        "marylux": {
+          "medium": {
+            "model": "lb_LU-marylux-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "ne": {
+      "ne_NP": {
+        "google": {
+          "x_low": {
+            "model": "ne_NP-google-x_low",
+            "enabled": false,
+            "auto_start": false
+          },
+          "medium": {
+            "model": "ne_NP-google-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "nl": {
+      "nl_BE": {
+        "nathalie": {
+          "x_low": {
+            "model": "nl_BE-nathalie-x_low",
+            "enabled": false,
+            "auto_start": false
+          },
+          "medium": {
+            "model": "nl_BE-nathalie-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "rdh": {
+          "x_low": {
+            "model": "nl_BE-rdh-x_low",
+            "enabled": false,
+            "auto_start": false
+          },
+          "medium": {
+            "model": "nl_BE-rdh-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      },
+      "nl_NL": {
+        "mls": {
+          "medium": {
+            "model": "nl_NL-mls-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        },
+        "mls_5809": {
+          "low": {
+            "model": "nl_NL-mls_5809-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "mls_7432": {
+          "low": {
+            "model": "nl_NL-mls_7432-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "no": {
+      "no_NO": {
+        "talesyntese": {
+          "medium": {
+            "model": "no_NO-talesyntese-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "pl": {
+      "pl_PL": {
+        "darkman": {
+          "medium": {
+            "model": "pl_PL-darkman-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        },
+        "gosia": {
+          "medium": {
+            "model": "pl_PL-gosia-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "mc_speech": {
+          "medium": {
+            "model": "pl_PL-mc_speech-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "mls_6892": {
+          "low": {
+            "model": "pl_PL-mls_6892-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "pt": {
+      "pt_BR": {
+        "edresson": {
+          "low": {
+            "model": "pt_BR-edresson-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "faber": {
+          "medium": {
+            "model": "pt_BR-faber-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      },
+      "pt_PT": {
+        "tug\u00e3o": {
+          "medium": {
+            "model": "pt_PT-tug\u00e3o-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "ro": {
+      "ro_RO": {
+        "mihai": {
+          "medium": {
+            "model": "ro_RO-mihai-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "ru": {
+      "ru_RU": {
+        "denis": {
+          "medium": {
+            "model": "ru_RU-denis-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        },
+        "dmitri": {
+          "medium": {
+            "model": "ru_RU-dmitri-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "irina": {
+          "medium": {
+            "model": "ru_RU-irina-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "ruslan": {
+          "medium": {
+            "model": "ru_RU-ruslan-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "sk": {
+      "sk_SK": {
+        "lili": {
+          "medium": {
+            "model": "sk_SK-lili-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "sl": {
+      "sl_SI": {
+        "artur": {
+          "medium": {
+            "model": "sl_SI-artur-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "sr": {
+      "sr_RS": {
+        "serbski_institut": {
+          "medium": {
+            "model": "sr_RS-serbski_institut-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "sv": {
+      "sv_SE": {
+        "nst": {
+          "medium": {
+            "model": "sv_SE-nst-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "sw": {
+      "sw_CD": {
+        "lanfrica": {
+          "medium": {
+            "model": "sw_CD-lanfrica-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "tr": {
+      "tr_TR": {
+        "dfki": {
+          "medium": {
+            "model": "tr_TR-dfki-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        },
+        "fahrettin": {
+          "medium": {
+            "model": "tr_TR-fahrettin-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "fettah": {
+          "medium": {
+            "model": "tr_TR-fettah-medium",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "uk": {
+      "uk_UA": {
+        "lada": {
+          "x_low": {
+            "model": "uk_UA-lada-x_low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "ukrainian_tts": {
+          "medium": {
+            "model": "uk_UA-ukrainian_tts-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "vi": {
+      "vi_VN": {
+        "25hours_single": {
+          "low": {
+            "model": "vi_VN-25hours_single-low",
+            "enabled": false,
+            "auto_start": false
+          }
+        },
+        "vais1000": {
+          "medium": {
+            "model": "vi_VN-vais1000-medium",
+            "enabled": true,
+            "auto_start": false
+          }
+        },
+        "vivos": {
+          "x_low": {
+            "model": "vi_VN-vivos-x_low",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      }
+    },
+    "zh": {
+      "zh_CN": {
+        "huayan": {
+          "x_low": {
+            "model": "zh_CN-huayan-x_low",
+            "enabled": false,
+            "auto_start": false
+          },
+          "medium": {
+            "model": "zh_CN-huayan-medium",
+            "enabled": true,
+            "auto_start": true
+          }
+        }
+      }
+    }
+  }
+}

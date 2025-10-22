@@ -11,8 +11,9 @@ class textToText:
     def __init__(self, llm_model, base_url, llm_api_key):
         # Supported languages by TTS
         languagesPiperTTS = [Language.ARABIC, Language.CATALAN, Language.CZECH, Language.WELSH, Language.DANISH, Language.GERMAN, Language.GREEK, Language.ENGLISH, Language.SPANISH, Language.PERSIAN, Language.FINNISH, Language.FRENCH, Language.HUNGARIAN, Language.ICELANDIC, Language.ITALIAN, Language.GEORGIAN, Language.KAZAKH, Language.DUTCH, Language.POLISH, Language.PORTUGUESE, Language.ROMANIAN, Language.RUSSIAN, Language.SLOVAK, Language.SERBIAN, Language.SWEDISH, Language.SWAHILI, Language.TURKISH, Language.UKRAINIAN, Language.VIETNAMESE, Language.CHINESE]
-        languages = languagesPiperTTS
-        #languages = list(set(languagesPiperTTS + otherTTSEngines))
+        languagesKokoroTTS = [Language.CHINESE, Language.ENGLISH, Language.FRENCH, Language.HINDI, Language.ITALIAN, Language.JAPANESE, Language.PORTUGUESE, Language.SPANISH]
+        languages = list(set(languagesPiperTTS + languagesKokoroTTS))
+
         self.detector = LanguageDetectorBuilder.from_languages(*languages).with_preloaded_language_models().with_minimum_relative_distance(0.3).build() # Eager load language detection models.
         
         self.llm_model = llm_model

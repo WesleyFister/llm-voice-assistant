@@ -1,0 +1,281 @@
+{
+  "language": {
+    "en": {
+      "en_us": {
+        "af_heart": {
+          "model": "af_heart",
+          "enabled": false,
+          "auto_start": false
+        },
+        "af_alloy": {
+          "model": "af_alloy",
+          "enabled": false,
+          "auto_start": false
+        },
+        "af_aoede": {
+          "model": "af_aoede",
+          "enabled": true,
+          "auto_start": true
+        },
+        "af_bella": {
+          "model": "af_bella",
+          "enabled": false,
+          "auto_start": false
+        },
+        "af_jessica": {
+          "model": "af_jessica",
+          "enabled": false,
+          "auto_start": false
+        },
+        "af_nicole": {
+          "model": "af_nicole",
+          "enabled": false,
+          "auto_start": false
+        },
+        "af_nova": {
+          "model": "af_nova",
+          "enabled": false,
+          "auto_start": false
+        },
+        "af_river": {
+          "model": "af_river",
+          "enabled": false,
+          "auto_start": false
+        },
+        "af_sarah": {
+          "model": "af_sarah",
+          "enabled": false,
+          "auto_start": false
+        },
+        "af_sky": {
+          "model": "af_sky",
+          "enabled": false,
+          "auto_start": false
+        },
+        "am_eric": {
+          "model": "am_eric",
+          "enabled": false,
+          "auto_start": false
+        },
+        "am_fenrir": {
+          "model": "am_fenrir",
+          "enabled": false,
+          "auto_start": false
+        },
+        "am_liam": {
+          "model": "am_liam",
+          "enabled": false,
+          "auto_start": false
+        },
+        "am_michael": {
+          "model": "am_michael",
+          "enabled": false,
+          "auto_start": false
+        },
+        "am_onyx": {
+          "model": "am_onyx",
+          "enabled": false,
+          "auto_start": false
+        },
+        "am_santa": {
+          "model": "am_santa",
+          "enabled": false,
+          "auto_start": false
+        },
+        "bf_alice": {
+          "model": "bf_alice",
+          "enabled": false,
+          "auto_start": false
+        }
+      },
+      "en_gb": {
+        "bf_emma": {
+          "model": "bf_emma",
+          "enabled": false,
+          "auto_start": false
+        },
+        "bf_isabella": {
+          "model": "bf_isabella",
+          "enabled": false,
+          "auto_start": false
+        },
+        "bm_daniel": {
+          "model": "bm_daniel",
+          "enabled": false,
+          "auto_start": false
+        },
+        "bm_fable": {
+          "model": "bm_fable",
+          "enabled": false,
+          "auto_start": false
+        },
+        "bm_george": {
+          "model": "bm_george",
+          "enabled": false,
+          "auto_start": false
+        },
+        "bm_lewis": {
+          "model": "bm_lewis",
+          "enabled": false,
+          "auto_start": false
+        }
+      }
+    },
+    "ja": {
+      "ja_ja": {
+        "jf_alpha": {
+          "model": "jf_alpha",
+          "enabled": false,
+          "auto_start": false
+        },
+        "jf_gongitsune": {
+          "model": "jf_gongitsune",
+          "enabled": false,
+          "auto_start": false
+        },
+        "jf_nezumi": {
+          "model": "jf_nezumi",
+          "enabled": false,
+          "auto_start": false
+        },
+        "jf_tebukuro": {
+          "model": "jf_tebukuro",
+          "enabled": false,
+          "auto_start": false
+        },
+        "jm_kumo": {
+          "model": "jm_kumo",
+          "enabled": true,
+          "auto_start": true
+        }
+      }
+    },
+    "zh": {
+      "zh_zh": {
+        "zf_xiaobei": {
+          "model": "zf_xiaobei",
+          "enabled": false,
+          "auto_start": false
+        },
+        "zf_xiaoni": {
+          "model": "zf_xiaoni",
+          "enabled": false,
+          "auto_start": false
+        },
+        "zf_xiaoxiao": {
+          "model": "zf_xiaoxiao",
+          "enabled": false,
+          "auto_start": false
+        },
+        "zf_xiaoyi": {
+          "model": "zf_xiaoyi",
+          "enabled": false,
+          "auto_start": false
+        },
+        "zm_yunjian": {
+          "model": "zm_yunjian",
+          "enabled": true,
+          "auto_start": true
+        },
+        "zm_yunxi": {
+          "model": "zm_yunxi",
+          "enabled": false,
+          "auto_start": false
+        },
+        "zm_yunxia": {
+          "model": "zm_yunxia",
+          "enabled": false,
+          "auto_start": false
+        },
+        "zm_yunyang": {
+          "model": "zm_yunyang",
+          "enabled": false,
+          "auto_start": false
+        }
+      }
+    },
+    "es": {
+      "es_es": {
+        "ef_dora": {
+          "model": "ef_dora",
+          "enabled": false,
+          "auto_start": false
+        },
+        "em_alex": {
+          "model": "em_alex",
+          "enabled": true,
+          "auto_start": true
+        },
+        "em_santa": {
+          "model": "em_santa",
+          "enabled": false,
+          "auto_start": false
+        }
+      }
+    },
+    "fr-fr": {
+      "fr-fr": {
+        "ff_siwis": {
+          "model": "ff_siwis",
+          "enabled": true,
+          "auto_start": true
+        }
+      }
+    },
+    "hi": {
+      "hi_hi": {
+        "hf_alpha": {
+          "model": "hf_alpha",
+          "enabled": false,
+          "auto_start": false
+        },
+        "hf_beta": {
+          "model": "hf_beta",
+          "enabled": false,
+          "auto_start": false
+        },
+        "hm_omega": {
+          "model": "hm_omega",
+          "enabled": false,
+          "auto_start": false
+        },
+        "hm_psi": {
+          "model": "hm_psi",
+          "enabled": true,
+          "auto_start": true
+        }
+      }
+    },
+    "it": {
+      "it_it": {
+        "if_sara": {
+          "model": "if_sara",
+          "enabled": false,
+          "auto_start": false
+        },
+        "im_nicola": {
+          "model": "im_nicola",
+          "enabled": true,
+          "auto_start": true
+        },
+        "pt-br": {
+          "pf_dora": {
+            "model": "pf_dora",
+            "enabled": false,
+            "auto_start": false
+          },
+          "pm_alex": {
+            "model": "pm_alex",
+            "enabled": false,
+            "auto_start": false
+          },
+          "pm_santa": {
+            "model": "pm_santa",
+            "enabled": false,
+            "auto_start": false
+          }
+        }
+      }
+    }
+  }
+}

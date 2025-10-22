@@ -2,12 +2,4 @@ src/llm-voice-assistant-client/audio-input/
 src/llm-voice-assistant-client/audio-response/
 src/llm-voice-assistant-client/__pycache__/
 src/llm-voice-assistant-client/venv/
-src/llm-voice-assistant-client/start.sh
-
-src/llm-voice-assistant-server/audio-input/
-src/llm-voice-assistant-server/audio-response/
-src/llm-voice-assistant-server/chat-history/
-src/llm-voice-assistant-server/piper-models/
-src/llm-voice-assistant-server/__pycache__/
-src/llm-voice-assistant-server/venv/
-src/llm-voice-assistant-server/start.sh
+src/llm-voice-assistant-client/chat-history
