@@ -46,13 +46,14 @@ class llmVoiceAssistantClient():
             self.system_prompt = f.read()
 
         self.stt_model = config['stt']['model']
+        self.stt_language = config['stt']['language']
         self.client_transcribe = OpenAI(base_url=config['stt']['api'], api_key=config['stt']['api_key'])
         self.textToText = textToText(base_url=config['llm']['api'], llm_api_key=config['llm']['api_key'], llm_model=config['llm']['model'])
         self.textToSpeech = textToSpeech(base_url=config['tts']['api'], api_key=config['tts']['api_key'])
 
         # Have whisper transcribe something to preload it into memory
         with Path("workAround.wav").open("rb") as audio_file:
-            self.client_transcribe.audio.transcriptions.create(model=self.stt_model, response_format="verbose_json", file=audio_file)
+            self.client_transcribe.audio.transcriptions.create(model=self.stt_model, language=self.stt_language, response_format="verbose_json", file=audio_file)
 
     def sendTextResponseToClient(self, transcription, sentences, done):
         sentinel = 0
@@ -198,7 +199,7 @@ class llmVoiceAssistantClient():
             with Path(audioInput).open("rb") as audio_file:
                 transcription = {}
                 startTime = time.perf_counter()
-                transcription_json = self.client_transcribe.audio.transcriptions.create(model=self.stt_model, response_format="verbose_json", file=audio_file)
+                transcription_json = self.client_transcribe.audio.transcriptions.create(model=self.stt_model, language=self.stt_language, response_format="verbose_json", file=audio_file)
                 endTime = time.perf_counter()
                 transcription["transcript"] = transcription_json.text
                 transcription["language"] = transcription_json.language

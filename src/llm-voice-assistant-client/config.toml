@@ -17,6 +17,7 @@ disable_wakeword = false
 model = "rtlingo/mobiuslabsgmbh-faster-whisper-large-v3-turbo"
 api = "http://localhost:8000/v1"
 api_key = "your_api_key_here"
+language = "" # By default Whisper will attempt to automatically determine what language is spoken. You can improve accuracy and latency if you specify a language here (i.e. "en", "es", "ja" or "zh")
 
 [llm]
 model = "LFM2-8B-A1B-GGUF:UD-Q4_K_XL"
