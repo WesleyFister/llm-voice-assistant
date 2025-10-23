@@ -91,7 +91,7 @@ class textToText:
                 json_string = file.read()
 
             chatHistory = json.loads(json_string)
-            chatHistory[0]['content'] = systemPrompt # Updates system prompt if changed from what was originally in the history
+            #chatHistory[0]['content'] = systemPrompt # Updates system prompt if changed from what was originally in the history
 
         # If the file doesn't exist, create it with an initial system prompt
         else:
@@ -113,6 +113,12 @@ class textToText:
             chatHistory = json.loads(json_string)
 
         # Append the user's message to the chat history
+        chatHistory.append(
+            {
+            'role': 'info',
+            'content': f'[Current date: {datetime.now().strftime("%Y-%m-%d (%A)")} Current time: {datetime.now().strftime("%I:%M %p")}]',
+            }
+        )
         chatHistory.append(
             {
             'role': 'user',
@@ -153,6 +159,9 @@ class textToText:
             'content': response,
             }
         )
+
+        # Delete the info role so it doesn't hog the LLM's context window
+        del chatHistory[-3]
 
         # Write chat history to file
         json_string = json.dumps(chatHistory, indent=2)
