@@ -150,6 +150,6 @@ class textToText:
         )
 
         # Write chat history to file
-        json_string = json.dumps(chatHistory)
+        json_string = json.dumps(chatHistory, indent=2)
         with open(chatHistoryFile, 'w') as file:
             file.write(json_string)
