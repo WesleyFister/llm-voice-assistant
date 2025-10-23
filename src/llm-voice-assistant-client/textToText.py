@@ -78,18 +78,22 @@ class textToText:
         language = transcription["language"] if language == None else language
         return language.lower()
 
-    def chatWithHistory(self, transcription, chatHistoryFile, systemPrompt=""):
-        systemPrompt = f'{systemPrompt} Current date: {datetime.now().strftime("%Y-%m-%d (%A)")} Current time: {datetime.now().strftime("%I:%M %p")}'
+    def chatWithHistory(self, transcription, chatHistoryFile, systemPrompt=""):        
+        # Add date and time into to system prompt
+        systemPrompt = systemPrompt.format(
+            date=datetime.now().strftime("%Y-%m-%d (%A)"),
+            time=datetime.now().strftime("%I:%M %p")
+        )
         
         # Try to load the chat history from a file
-        try:
+        if os.path.exists(chatHistoryFile):
             with open(chatHistoryFile, "r") as file:
                 json_string = file.read()
 
             chatHistory = json.loads(json_string)
 
         # If the file doesn't exist, create it with an initial system prompt
-        except FileNotFoundError:
+        else:
             json_string = json.dumps(
                 [
                     {
