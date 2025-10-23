@@ -91,6 +91,7 @@ class textToText:
                 json_string = file.read()
 
             chatHistory = json.loads(json_string)
+            chatHistory[0]['content'] = systemPrompt # Updates system prompt if changed from what was originally in the history
 
         # If the file doesn't exist, create it with an initial system prompt
         else:
