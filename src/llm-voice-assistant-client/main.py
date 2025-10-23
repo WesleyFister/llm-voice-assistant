@@ -70,8 +70,7 @@ class llmVoiceAssistantClient():
 
                     if sentinel == 0:
                         endTime = time.perf_counter()
-                        elapsedTime = endTime - startTime
-                        print(f"Took {elapsedTime} seconds LLM response")
+                        print(f"Took {endTime - startTime:.4f} seconds LLM response")
                     
                     sentinel = 1
                     
@@ -198,13 +197,14 @@ class llmVoiceAssistantClient():
         if voiceDetected == True:
             with Path(audioInput).open("rb") as audio_file:
                 transcription = {}
+
                 startTime = time.perf_counter()
                 transcription_json = self.client_transcribe.audio.transcriptions.create(model=self.stt_model, language=self.stt_language, response_format="verbose_json", file=audio_file)
                 endTime = time.perf_counter()
+                print(f"Took {endTime - startTime:.4f} seconds to transcribe User\'s speech")
+
                 transcription["transcript"] = transcription_json.text
                 transcription["language"] = transcription_json.language
-                
-                print(f"Took {endTime - startTime} seconds to transcribe User\'s speech")
                 print(f"\033[32mUser: {transcription['transcript']}\033[0m")
 
             if os.path.exists(audioInput):
@@ -222,7 +222,11 @@ class llmVoiceAssistantClient():
 
                 if sentence != done:
                     audioResponse = 'audio-response/response-' + os.urandom(8).hex() + '.wav'
+                    
+                    startTime = time.perf_counter()
                     self.textToSpeech.textToSpeech(sentence, audioResponse)
+                    endTime = time.perf_counter()
+                    print(f"Took {endTime - startTime:.4f} seconds to generate audio")
 
                     audioFile.put(audioResponse)
                 
