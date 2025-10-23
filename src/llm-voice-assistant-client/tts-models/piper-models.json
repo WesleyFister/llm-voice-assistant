@@ -186,7 +186,7 @@
           "medium": {
             "model": "en_GB-jenny_dioco-medium",
             "enabled": true,
-            "auto_start": true
+            "auto_start": false
           }
         },
         "northern_english_male": {
@@ -953,7 +953,7 @@
           "medium": {
             "model": "zh_CN-huayan-medium",
             "enabled": true,
-            "auto_start": true
+            "auto_start": false
           }
         }
       }
