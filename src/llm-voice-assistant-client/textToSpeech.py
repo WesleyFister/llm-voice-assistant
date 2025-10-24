@@ -61,7 +61,7 @@ class textToSpeech:
                                     res = self.openai.audio.speech.create(model=f"speaches-ai/piper-{model_info['model']}", voice="voice_id", input="Hello world!", response_format="wav")
 
     def cleanText(self, text):
-        bannedCharacters = "*$"
+        bannedCharacters = ["*", "$", "\n"]
         for character in bannedCharacters:
             text["sentence"] = text["sentence"].replace(character, "")
 
