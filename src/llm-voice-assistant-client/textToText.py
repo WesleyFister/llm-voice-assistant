@@ -140,7 +140,7 @@ class textToText:
             
                 # Chunk the response into sentences and yield each one as it is completed
                 sentences = sent_tokenize(response)
-                if len(sentences) > sentence:
+                while sentence < len(sentences):
                     language = self.langDetect(sentences[sentence - 1], transcription)
                     yield { "token": part, "sentence": sentences[sentence - 1], "language": language }
                     sentence += 1
