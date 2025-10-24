@@ -114,14 +114,8 @@ class textToText:
         # Append the user's message to the chat history
         chatHistory.append(
             {
-            'role': 'info',
-            'content': f'[Current date: {datetime.now().strftime("%Y-%m-%d (%A)")} Current time: {datetime.now().strftime("%I:%M %p")}]',
-            }
-        )
-        chatHistory.append(
-            {
             'role': 'user',
-            'content': transcription["transcript"],
+            'content': f'[METADATA]\nCurrent date: {datetime.now().strftime("%Y-%m-%d (%A)")}\nCurrent time: {datetime.now().strftime("%I:%M %p")}]\n[/METADATA]\n\nUser query: {transcription["transcript"]}',
             }
         )
 
@@ -160,7 +154,10 @@ class textToText:
         )
 
         # Delete the info role so it doesn't hog the LLM's context window
-        del chatHistory[-3]
+        chatHistory[-2] = {
+            'role': 'user',
+            'content': transcription["transcript"],
+            }
 
         # Write chat history to file
         json_string = json.dumps(chatHistory, indent=2)
