@@ -115,7 +115,7 @@ class textToText:
         chatHistory.append(
             {
             'role': 'user',
-            'content': f'[METADATA]\nCurrent date: {datetime.now().strftime("%Y-%m-%d (%A)")}\nCurrent time: {datetime.now().strftime("%I:%M %p")}]\n[/METADATA]\n\nUser query: {transcription["transcript"]}',
+            'content': f'<context>Current date: {datetime.now().strftime("%Y-%m-%d (%A)")}\nCurrent time: {datetime.now().strftime("%I:%M %p")}]</context>\n\n {transcription["transcript"]}',
             }
         )
 
