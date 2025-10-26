@@ -35,7 +35,7 @@ class llmVoiceAssistantClient():
         self.recording_length = int(30 * mult)
         self.vad_initial_delay = int(config['vad']['initial_delay'] * mult)
         self.vad_delay = int(config['vad']['delay'] * mult)
-        self.no_wakeword = config['system']['disable_wakeword']
+        self.no_wakeword = config['wakeword']['disable_wakeword']
         if config['chat']['history'] == "":
             self.chat_history = f"chat-history/chat-history-{os.urandom(8).hex()}.json"
 
