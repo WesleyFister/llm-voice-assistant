@@ -31,6 +31,7 @@ class llmVoiceAssistantClient():
         # num_samples / SAMPLE_RATE = seconds of audio
         # In this case it is 0.032 seconds.
         mult = 31.25
+        self.wakeword_model = config['wakeword']['model']
         self.recording_length = int(30 * mult)
         self.vad_initial_delay = int(config['vad']['initial_delay'] * mult)
         self.vad_delay = int(config['vad']['delay'] * mult)
@@ -82,7 +83,7 @@ class llmVoiceAssistantClient():
     def clientStart(self):
         while True:
             if self.no_wakeword == False:
-                wakeWord()
+                wakeWord(self.wakeword_model)
 
                 self.running = False
 

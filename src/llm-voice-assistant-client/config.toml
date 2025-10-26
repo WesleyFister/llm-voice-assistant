@@ -1,6 +1,10 @@
 [client]
 description = "This is the client side code for LLM Voice Assistant"
 
+[wakeword]
+model = "hey jarvis" # Use one of the pretrained models from openWakeWord ("alexa", "hey mycroft" or "hey jarvis") or specify a path to your custom model.
+disable_wakeword = false
+
 [vad]
 initial_delay = 10.0
 delay = 2.0
@@ -11,7 +15,6 @@ history = ""
 
 [system]
 system_prompt = "system-prompts/default-prompt.txt"
-disable_wakeword = false
 
 [stt]
 model = "rtlingo/mobiuslabsgmbh-faster-whisper-large-v3-turbo"

@@ -3,8 +3,21 @@ import openwakeword
 import pyaudio
 import numpy as np
 
-def wakeWord():
-    openwakeword.utils.download_models(['hey_jarvis_v0.1'])
+def wakeWord(model):
+    if model == "alexa":
+        openwakeword.utils.download_models(['alexa_v0.1'])
+        model = Model(wakeword_models = ["alexa"])
+
+    elif model == "hey mycroft":
+        openwakeword.utils.download_models(['hey_mycroft_v0.1'])
+        model = Model(wakeword_models = ["hey mycroft"])
+
+    elif model == "hey jarvis":
+        openwakeword.utils.download_models(['hey_jarvis_v0.1'])
+        model = Model(wakeword_models = ["hey jarvis"])
+
+    else:
+        model = Model(wakeword_models = model)
 
     p = pyaudio.PyAudio()
 
@@ -15,7 +28,7 @@ def wakeWord():
 
     stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
 
-    model = Model(wakeword_models = ["hey jarvis"])
+    
     print("Listening for wake word...")
 
     sentinel = False
