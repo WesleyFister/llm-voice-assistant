@@ -11,13 +11,10 @@ import queue
 import numpy as np
 import pyaudio
 import simpleaudio as sa
-import torch
-torch.set_num_threads(1)
-import torchaudio
+import onnxruntime as ort
 from collections import deque
 from pathlib import Path
 from openai import OpenAI
-# possibly can remove torch by using silero vad onnx
 
 class llmVoiceAssistantClient():
     def __init__(self):
@@ -98,9 +95,12 @@ class llmVoiceAssistantClient():
                 self.playAudioResponse()
 
     def recordAudio(self):
-        # Download and load the Silero VAD model.
-        model, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad', model='silero_vad')
-        torch.set_grad_enabled(False) # Not having this causes memory leak in SileroVAD as audio will be stored indefinitely.
+        # Load model
+        session = ort.InferenceSession("silero-vad/silero_vad.onnx")
+
+        input_name = session.get_inputs()[0].name
+        state_name = session.get_inputs()[1].name
+        sr_name = session.get_inputs()[2].name
 
         # Provided by Alexander Veysov.
         def int2float(sound):
@@ -141,6 +141,9 @@ class llmVoiceAssistantClient():
         buffer_size = 93
         audio_buffer = deque(maxlen=buffer_size)
 
+        # Initialize VAD state
+        state = np.zeros((2, 1, 128), dtype=np.float32)
+
         # Send user audio data to the server.
         while silence < delay or voiceDetected == False:
             if self.no_wakeword == True:
@@ -171,8 +174,15 @@ class llmVoiceAssistantClient():
             
             audio_float32 = int2float(audio_int16)
 
+            inputs = {
+                input_name: audio_float32[np.newaxis, :],
+                state_name: state,
+                sr_name: np.array(SAMPLE_RATE, dtype=np.int64),
+            }
+
             # Get the confidences
-            new_confidence = model(torch.from_numpy(audio_float32), 16000).item()
+            outs = session.run(None, inputs)
+            new_confidence, state = outs  # model outputs [speech_prob, new_state]
             if new_confidence >= 0.3:
                 delay = self.vad_delay
                 delay2 = self.vad_delay

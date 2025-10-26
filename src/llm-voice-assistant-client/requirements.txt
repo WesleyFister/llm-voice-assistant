@@ -1,7 +1,5 @@
-torch==2.0.1
-torchaudio==2.0.2
+onnxruntime==1.23.2
 numpy<2.0
-silero-vad==5.1.2
 openwakeword==0.6.0
 pyaudio==0.2.14
 requests==2.32.4
