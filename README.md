@@ -7,14 +7,17 @@ Carry a spoken conversation with large language models! This project uses Whispe
 ## Install
 ### Client
 If you have `pyenv` installed
-1. `setup.sh`
-2. `python3 main.py`
+1. `pyenv install 3.11 --skip-existing`
+2. `pyenv global 3.11.14`
+3. `pyenv exec python3.11 -m venv venv`
 
 If you already have `python3.11`
 1. `python3 -m venv venv`
-2. `source venv/bin/activate`
-3. `pip install -r requirements.txt`
-4. `python3 main.py`
+
+Now. 
+1. `source venv/bin/activate` (Linux) or `.\venv\Scripts\Activate.ps1` (Windows)
+2. `pip install -r requirements.txt`
+3. `python3 main.py`
 
 ### Server
 Where the `docker-compose.yml` is run `docker compose up -d`.
