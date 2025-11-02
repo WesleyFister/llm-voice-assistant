@@ -127,5 +127,6 @@ services:
     ports:
       - '9292:8080'
     restart: unless-stopped
+    user: '0:0'
     volumes:
-      - models:/root/.cache/llama.cpp/
+      - models:/app/.cache/llama.cpp/
