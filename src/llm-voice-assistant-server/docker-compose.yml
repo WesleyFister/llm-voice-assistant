@@ -20,11 +20,9 @@ configs:
           /app/llama-server
           --port 9999
 
-      # Not setting --no-warmup causes model load times to dramatically
-      increase.
-
+      # Not setting --no-mmap causes model load times to dramatically increase.
       models:
-        # For testing
+        # Good for testing
         "LFM2-8B-A1B-GGUF:UD-Q4_K_XL":
           proxy: "http://127.0.0.1:9999"
           cmd: >
@@ -33,7 +31,7 @@ configs:
             -ngl 99
             --ctx-size 8192
             --jinja
-            --flash-attn auto
+            --no-mmap
             --no-warmup
 
         "Llama-3.3-70B-Instruct-ablated-GGUF:IQ4_XS":
@@ -42,9 +40,10 @@ configs:
             $${latest-llama}
             -hf bartowski/Llama-3.3-70B-Instruct-ablated-GGUF:IQ4_XS
             -ngl 99
-            --ctx-size 24384
+            --ctx-size 8192
             --jinja
-            --flash-attn auto
+            --no-mmap
+            --no-warmup
 
 services:
   init-speaches:
