@@ -34,11 +34,33 @@ configs:
             --no-mmap
             --no-warmup
 
-        "Llama-3.3-70B-Instruct-ablated-GGUF:IQ4_XS":
+        "Gemma-3-27b-it-GGUF:UD-Q4_K_XL":
           proxy: "http://127.0.0.1:9999"
           cmd: >
             $${latest-llama}
-            -hf bartowski/Llama-3.3-70B-Instruct-ablated-GGUF:IQ4_XS
+            -hf unsloth/gemma-3-27b-it-GGUF:UD-Q4_K_XL
+            -ngl 99
+            --ctx-size 8192
+            --jinja
+            --no-mmap
+            --no-warmup
+
+        "Qwen3-VL-32B-Instruct-GGUF:UD-Q4_K_XL":
+          proxy: "http://127.0.0.1:9999"
+          cmd: >
+            $${latest-llama}
+            -hf unsloth/Qwen3-VL-32B-Instruct-GGUF:UD-Q4_K_XL
+            -ngl 99
+            --ctx-size 8192
+            --jinja
+            --no-mmap
+            --no-warmup
+
+        "Llama-3.3-70B-Instruct-GGUF:UD-Q4_K_XL":
+          proxy: "http://127.0.0.1:9999"
+          cmd: >
+            $${latest-llama}
+            -hf unsloth/Llama-3.3-70B-Instruct-GGUF:UD-Q4_K_XL
             -ngl 99
             --ctx-size 8192
             --jinja
